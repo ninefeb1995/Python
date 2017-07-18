@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load staticfiles %}
+<head>
+    <meta charset="UTF-8">
+    <title>Library</title>
+	<link rel="stylesheet" type="text/css" href="{% static "css/style.css" %}" />
+    {% block header %}
+
+    {% endblock %}
+</head>
+<body>
+<div id="wrap">
+       <div class="header">
+       		<div class="logo">
+				<a href="{% url 'home' %}"><img src="{% static "img/logo.gif" %}" alt="" title="" border="0" /></a>
+			</div>
+			<div id="menu">
+                {% url 'home' as home %}
+                {% url 'autobooks' as autobooks %}
+                {% url 'login' as login %}
+                {% url 'register' as register %}
+                {% url 'contact' as contact %}
+				<ul>
+					<li {% if request.path == home or request.path == "" %} class="selected" {% endif %}><a href="{% url 'home' %}">Home</a></li>
+                    <li {% if request.path == autobooks %} class="selected" {% endif %}><a href="{% url 'autobooks' %}">Books</a></li>
+					{% if not request.user.is_authenticated %}
+                        <li {% if request.path == myaccount %} class="selected" {% endif %} ><a href="{% url 'login' %}?next= ">Login</a></li>
+                     {% else %}
+                        {% if request.user.is_superuser  %}
+                            <li><a href="/admin">Manage</a></li>
+                        {% else %}
+                            <li><a href="{% url 'my-cart' %}">My cart</a></li>
+                        {% endif %}
+                        <li><a href="{% url 'logout' %}?next={{ request.get_full_path|urlencode }}" >Log out</a></li>
+                    {% endif %}
+{#					<li {% if request.path == register %} class="selected" {% endif %}><a href="{% url 'register' %}">Register</a></li>#}
+					<li {% if request.path == contact %} class="selected" {% endif %}><a href="{% url 'contact' %}">Contact</a></li>
+				</ul>
+			</div>
+       </div>
+
+       <div class="center_content">
+            <div class="clearleft"></div>
+            {% block placeholder %}
+
+            {% endblock %}
+            <div class="right_content">
+                {% if request.user.is_authenticated %}
+                    <div class="cart">
+                        <div class="title">Hello, {{ request.user.first_name  }} {{ request.user.last_name  }}</div>
+                    </div>
+                {% endif %}
+                <div class="title"><span class="title_icon"><img src="{% static "img/bullet3.gif" %}" alt="" title="" /></span>About Our Store</div>
+                <div class="about">
+                    <p>
+                        <img src="{% static "img/about.gif" %}" alt="" title="" class="right" />
+                        Book store is ...
+                    </p>
+                </div>
+
+                <div class="right_box">
+                    <div class="title"><span class="title_icon"><img src="{% static "img/bullet5.gif" %}" alt="" title="" /></span>Categories</div>
+                    <ul class="list">
+                        {% if categories %}
+                            {% for category in categories %}
+                                <li><a href="{% url 'category' category.id %}">{{ category.title }}</a></li>
+                            {% endfor %}
+                        {% endif %}
+                    </ul>
+                </div>
+
+            </div><!--end of right content-->
+
+            <div class="clear">
+			</div>
+       </div><!--end of center content-->
+
+		<div class="footer">
+			<div class="left_footer">
+				<img src="{% static "img/footer_logo.gif" %}" alt="" title="" />
+				<br />
+				<a href=#">
+					<img src="{% static "img/csscreme.gif" %}" alt="Bookstore" border="0" />
+				</a>
+			</div>
+			<div class="right_footer">
+				<a href="{% url 'home' %}">Home</a>
+				<a href="{% url 'contact' %}">Contact us</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

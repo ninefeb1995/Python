@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block placeholder %}
+    <div class="left_content">
+        <div class="title">
+            <span class="title_icon"><img src=" {% static 'img/bullet1.gif'  %}" alt="" title="" /></span>
+            Contact Us
+        </div>
+        <div class="feat_prod_box_details">
+            {% if is_sent == 'true' %}
+                <div class="">
+                    <p>Thank you for sending us your feedback, we'll writing back as soon as possible</p>
+                </div>
+            {% else %}
+                <div class="contact_form">
+                    <div class="form_subtitle">Please fill out your information here</div>
+                    <form name="contact" action="{% url 'contact' %}" method="post">
+                        {% csrf_token %}
+                        <div class="form_row">
+                            <label class="contact"><strong>Name:</strong></label>
+                            <input type="text" class="contact_input" name="name"/>
+                        </div>
+
+                        <div class="form_row">
+                            <label class="contact"><strong>Email:</strong></label>
+                            <input type="text" class="contact_input" name="email" />
+                        </div>
+
+                        <div class="form_row">
+                            <label class="contact"><strong>Phone:</strong></label>
+                            <input type="text" class="contact_input" name="phone"/>
+                        </div>
+
+                        <div class="form_row">
+                            <label class="contact"><strong>Message:</strong></label>
+                            <textarea class="contact_textarea" name="message"></textarea>
+                        </div>
+
+                        <div class="form_row">
+                            <input type="submit" class="contact_button" value="Send" />
+                        </div>
+                    </form>
+                </div>
+            {% endif %}
+
+        </div>
+        <div class="clear">
+        </div>
+    </div><!--end of left content-->
+{% endblock %}

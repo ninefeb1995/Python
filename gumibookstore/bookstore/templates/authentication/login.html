@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block placeholder %}
+    <div class="left_content">
+        <div class="title">
+            <span class="title_icon"><img src="{% static "img/bullet1.gif" %}" alt="" title="" /></span>
+            My account
+        </div>
+
+        <div class="feat_prod_box_details">
+             <div class="contact_form">
+                <div class="form_subtitle">
+                    Login into your account
+                </div>
+
+                <form name="register" action="" method="post">
+                    {% csrf_token %}
+                    <div class="form_row">
+                        <label class="contact"><strong>Username:</strong></label>
+                        <input type="text" class="contact_input" name="username" {% if username %} value={{ username }} {% endif %}/>
+                    </div>
+                    <div class="form_row">
+                        <label class="contact"><strong>Password:</strong></label>
+                        <input type="password" class="contact_input" name="password" {% if password %} value={{ password }} {% endif %} />
+                    </div>
+                    <div class="form_row">
+                        <div class="terms">
+                            <input type="checkbox" name="terms" />
+                            Remember me
+                        </div>
+                    </div>
+                    {% if validator %}
+                        <div class="validation">
+                            <p>{{ validator }}</p>
+                        </div>
+                    {% endif %}
+                    <div class="form_row">
+                        <input type="submit" class="register" value="Login" />
+                    </div>
+                </form>
+
+            </div>
+        </div>
+        <div class="clear"></div>
+    </div><!--end of left content-->
+{% endblock %}
