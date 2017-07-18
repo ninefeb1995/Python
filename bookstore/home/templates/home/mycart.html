@@ -1,0 +1,49 @@
+{% extends "home/layout.html" %}
+{% load staticfiles %}
+{% block placeholder %}
+    <div class="left_content">
+        <div class="title"><span class="title_icon"><img src="{% static "images/bullet1.gif" %}" alt="" title="" /></span>My cart</div>
+
+        <div class="feat_prod_box_details">
+
+            <table class="cart_table">
+                <tr class="cart_title">
+                    <td>Book cover</td>
+                    <td>Book name</td>
+                    <td>Status</td>
+                    <td>Check out</td>
+                </tr>
+                {% if order_details %}
+                     {% for order_detail in  order_details %}
+                         <tr>
+                            <td id="detail"><a href="{% url "detail" id %}"><img src="" alt="" title="" border="0" class="cart_thumb" /></a></td>
+                            <td>{{ order_detail.book_id.book_image_id.book_image_path }}</td>
+                            <td>{{ order_detail.book_id.book_name }}</td>
+                            <td><input type="checkbox" name="terms" {% if 1 %}
+                                    disabled="disabled" checked="checked"
+                                {% endif %} /></td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
+            <a href="#" class="checkout">Borrow &gt;</a>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+            $.ajax({
+                    url: "http://localhost/cgi-bin/variousTests/post.py",
+                    type: "POST",
+                    data: {
+                            foo: 'bar',
+                            bar: 'foo'
+                    },
+                    success: function(response){
+                        $("#div").html(response);
+                    }
+            });
+        </script>
+    </div><!--end of left content-->
+{% endblock %}
+
+
+
