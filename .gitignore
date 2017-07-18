@@ -99,3 +99,8 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+my_env
+django_gumi_docker
+Tên các web service gateway interface.txt
+requirements.txt
