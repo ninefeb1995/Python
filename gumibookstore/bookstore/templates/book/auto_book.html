@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block placeholder %}
+    <div class="left_content">
+       <div class="title">
+            <span class="title_icon"><img src=" {% static "img/bullet1.gif" %} " alt="" title="" /></span>
+            Category books
+        </div>
+
+       <div class="new_products">
+            {% if quantity_of_books_per_page %}
+                {% for book in quantity_of_books_per_page %}
+                    <div class="new_prod_box">
+                        <a href="{% url 'detail' book.id %}">{{ book.title }}</a>
+                        <div class="new_prod_bg">
+                            <a href="{% url 'detail' book.id %}"><img src="{{ book.image.url }}" alt="" title="" class="thumb" border="0" /></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="pagination">
+                <span class="step-links">
+                    {% if quantity_of_books_per_page.has_previous %}
+                        <a href="?current-page={{ quantity_of_books_per_page.previous_page_number }}">Previous</a>
+                    {% endif %}
+                </span>
+
+                <span class="current">
+                    Page {{ quantity_of_books_per_page.number }} of {{ quantity_of_books_per_page.paginator.num_pages }}.
+                </span>
+
+                <span>
+                    {% if quantity_of_books_per_page.has_next %}
+                        <a href="?current-page={{ quantity_of_books_per_page.next_page_number }}">Next</a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+
+        <div class="clear">
+        </div>
+    </div><!--end of left content-->
+{% endblock %}
