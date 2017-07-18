@@ -1,0 +1,37 @@
+{% extends 'home/layout.html' %}
+{% load staticfiles %}
+{% block placeholder %}
+    <div class="left_content">
+       <div class="title">
+            <span class="title_icon"><img src=" {% static "images/bullet1.gif" %} " alt="" title="" /></span>
+            Category books
+        </div>
+
+       <div class="new_products">
+            {% if quantity_of_books_per_page %}
+                {% for book in quantity_of_books_per_page %}
+                    <div class="new_prod_box">
+                        <a href="{% url 'detail' book.id %}">{{ book.book_name }}</a>
+                        <div class="new_prod_bg">
+                            <a href="{% url 'detail' book.id %}"><img src="{% static book.book_image_id.book_image_path %}" alt="" title="" class="thumb" border="0" /></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            <div class="pagination">
+{#                {% if quantity_of_books_per_page.has_previous %}#}
+{##}
+{#                {% else %}#}
+{##}
+{#                {% endif %}#}
+{##}
+{#                <a class="current" href="#?page=2"> >> </a>#}
+{#                <a class="current" href="#?page=2">    </a>#}
+            </div>
+        </div>
+
+        <div class="clear">
+        </div>
+    </div><!--end of left content-->
+{% endblock %}

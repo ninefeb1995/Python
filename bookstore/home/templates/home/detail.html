@@ -1,0 +1,92 @@
+{% extends "home/layout.html" %}
+{% load staticfiles %}
+{% block header %}
+	<link rel="stylesheet" href="{% static "lightbox.css" %}" type="text/css" media="screen" />
+	<script src="{% static "js/prototype.js" %}" type="text/javascript"></script>
+	<script src="{% static "js/scriptaculous.js?load=effects" %}" type="text/javascript"></script>
+	<script src="{% static "js/lightbox.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/java.js" %}" type="text/javascript" ></script>
+{% endblock %}
+{% block placeholder %}
+    <div class="left_content">
+
+        <div class="crumb_nav">
+            <a href="{% url 'index' %}">Home</a> &gt;&gt; {{ book.book_name }}
+        </div>
+        <div class="title"><span class="title_icon"><img src={% static "images/bullet1.gif" %} alt="" title="" /></span>{{ book.book_name }}</div>
+
+        <div class="feat_prod_box_details">
+            <div class="prod_img">
+                <a href="{% static book.book_image_id.book_image_path %}"><img src="{% static book.book_image_id.book_image_path %}" alt="cover_image" class="book_cover" title="" border="0"  /></a>
+                <br />
+                <br />
+                <a href="{% static book.book_image_id.book_image_path %}" rel="lightbox"><img src=" {% static "images/zoom.gif" %} " alt="" title="" border="0" /></a>
+            </div>
+
+            <div class="prod_det_box">
+                <div class="box_top"></div>
+                <div class="box_center">
+                    <div class="prod_title">Details</div>
+                    <p class="details">{{ book.detail }}</p>
+                    <a href="#" class="more">Add my cart</a>
+                    <div class="clear"></div>
+                </div>
+                <div class="box_bottom"></div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+
+        <div id="demo" class="demolayout">
+
+            <ul id="demo-nav" class="demolayout">
+                <li><a class="active" href="#tab1">More details</a></li>
+                <li><a class="" href="#tab2">Related books</a></li>
+            </ul>
+
+            <div class="tabs-container">
+
+                <div class="tab" id="tab1">
+                    <p class="more_details">Lorem...</p>
+                    <ul class="list">
+                        <li><a href="#">Lorem...</a></li>
+                    </ul>
+                    <p class="more_details">Lorem...</p>
+                </div>
+
+                <div class="tab" id="tab2">
+                {% if list_book_of_cate %}
+                    {% for book in list_book_of_cate %}
+                        <div class="new_prod_box">
+                            <a href="{% url "detail" book.id %}">{{ book.book_name }}</a>
+                            <div class="new_prod_bg">
+                                <a href="{% url "detail" book.id %}"><img src={% static book.book_image_id.book_image_path %} alt="" title="" class="thumb" border="0" /></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="feat_prod_box">
+                        <div class="prod_det_box">
+                            <p>There's nothing...</p>
+                        </div>
+                        <div class="clear">
+                        </div>
+                    </div>
+                {% endif %}
+                    <div class="clear"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+
+            var tabber1 = new Yetii({
+            id: 'demo'
+            });
+        </script>
+    </div><!--end of left content-->
+{% endblock %}
+
+
+
