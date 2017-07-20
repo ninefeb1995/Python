@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="col-sm-6 col-sm-offset-3">
+    {% for object in object_list %}
+        <div class="row">
+        <div class="col-sm-12">
+             <div class="thumbnail">
+                  <div class="caption">
+                    {% if object.image %}
+                    <img class="img-responsive" src="{{ object.image.url }}"/>
+                    {% endif %}
+                    <h3><a href="{{ object.get_absolute_url }}">{{ object.title }}</a> <small>{{ object.timestamp | timesince }} ago</small></h3>
+                    <p>{{ object.content | linebreaks | truncatechars:30 }}</p>
+                    <p><a class="btn btn-primary" role="button" href="{{ object.get_absolute_url }}">View</a></p>
+                  </div>
+             </div>
+        </div>
+{#        {% cycle "" "<div class='col-sm-12'><hr/></div></div><div class='row'>" %}#}
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}
+
+
+
+
+
+        <h3>Thumbnail label</h3>
+        <p>...</p>
+        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+
