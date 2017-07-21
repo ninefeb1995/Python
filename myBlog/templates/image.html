@@ -7,7 +7,7 @@
 <body>
     <form enctype="multipart/form-data" method="post" action="">
         {% csrf_token %}
-        <input type="file" name="pic" accept="image/*">
+        <input type="file" name="pic" multiple>
         <input type="submit" value="Send">
     </form>
 </body>

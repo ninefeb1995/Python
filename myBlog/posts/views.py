@@ -4,7 +4,8 @@ from django.contrib import messages
 from .models import Post
 from .form import PostForm
 import imghdr
-
+from rest_framework import generics
+from .serializers import PostSerializer
 # Create your views here.
 
 
@@ -48,6 +49,10 @@ def post_update(request, pk=None):
     return render(request, "create.html", context)
 
 
+class PostCreate(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
+
 
 def post_delete(request, pk=None):
     instance = get_object_or_404(Post, pk=pk)
@@ -63,7 +68,11 @@ def upload(f):
 
 def upload_image(request):
     image = request.FILES
-    if image and imghdr.what(image['pic']) is not None:
-        upload(image['pic'])
+    if image:
+        for item in image.getlist('pic'):
+            upload(item)
         return HttpResponse("<p>Successful<p/>")
+    #if image and imghdr.what(image['pic']) is not None:
+        #upload(image['pic'])
+        #return HttpResponse("<p>Successful<p/>")
     return render(request, "image.html", {})
