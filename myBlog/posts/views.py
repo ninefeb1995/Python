@@ -6,6 +6,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import Post
 from .form import PostForm
+from django.db.models import Q
+from django.utils import timezone
 import imghdr
 from rest_framework import generics
 from .serializers import PostSerializer
@@ -14,9 +16,16 @@ from django.contrib.auth import models
 
 
 def post_list(request):
-    query_set = Post.objects.all().order_by("-timestamp")
-
-    return render(request, "list.html", {'object_list':query_set})
+    query_set = Post.objects.active()   #all().order_by("-timestamp")
+    if request.user.is_staff or request.user.is_superuser:
+        query_set = Post.objects.all()
+    find_what = request.GET.get("find")
+    if find_what:
+        query_set = query_set.filter(
+            Q(title__icontains=find_what) |
+            Q(content__icontains=find_what)
+        ).distinct()
+    return render(request, "list.html", {'object_list': query_set})
 
 
 def post_detail(request, pk=None):
