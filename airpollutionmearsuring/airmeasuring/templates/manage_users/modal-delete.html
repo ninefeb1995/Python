@@ -1,0 +1,20 @@
+{% extends 'modal-base.html' %}
+
+{% block modal_id %}modal-delete{% endblock %}
+
+{% block modal_title %}
+  Delete
+{% endblock %}
+
+{% block modal_body %}
+  Confirm !
+{% endblock %}
+
+{% block modal_footer %}
+  <form id="form-delete" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="_method" value="delete"/>
+    <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+    <button type="submit" class="btn btn-primary">Yes</button>
+  </form>
+{% endblock %}
