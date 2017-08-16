@@ -1,15 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
     <div class="col-sm-6 col-sm-offset-3">
+    <form method="get" action="">
+        <input type="text" placeholder="Search" name="find" value="{{ request.GET.find }}"/>
+        <input type="submit" value="Search"/>
+    </form>
     {% for object in object_list %}
         <div class="row">
         <div class="col-sm-12">
              <div class="thumbnail">
                   <div class="caption">
                     {% if object.image %}
-                    <img class="img-responsive" src="{{ object.image.url }}"/>
+                        <img class="img-responsive" src="{{ object.image.url }}"/>
                     {% endif %}
-                    <h3><a href="{{ object.get_absolute_url }}">{{ object.title }}</a> <small>{{ object.timestamp | timesince }} ago</small></h3>
+                    <h3><a href="{{ object.get_absolute_url }}">{{ object.title }}</a> <small>{{ object.publish }} ago</small></h3>
                     <p>{{ object.content | linebreaks | truncatechars:30 }}</p>
                     <p><a class="btn btn-primary" role="button" href="{{ object.get_absolute_url }}">View</a></p>
                   </div>
