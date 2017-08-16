@@ -38,6 +38,11 @@ pip-delete-this-directory.txt
 # Unit test / coverage reports
 htmlcov/
 .tox/
+
+#Miscellaneous
+Tên các web service gateway interface.txt
+
+
 .coverage
 .coverage.*
 .cache
