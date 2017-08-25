@@ -21,7 +21,7 @@ from django.conf import settings
 urlpatterns = [
     #url(r'^admin/', admin.site.urls),
     url(r'^', include('custom_auth.urls')),
-    url(r'^', include('dashboard.urls')),
+    url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^manage-users/', include('manage_users.urls', namespace='manage_users')),
 

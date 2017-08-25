@@ -60,4 +60,37 @@ $(document).ready(function () {
     });
   });
 
+  // Submit edit form
+  // language=JQuery-CSS
+  $('#btn-edit-save').on('click', function (){
+    var edit_form = $('#form-edit-user');
+    if(edit_form.valid()){
+      edit_form.submit();
+    }
+    // $('#form-edit-user').submit(function (eventObj){
+    //   //var type_of_user = $('.checked').find('input:first').val();
+    //   //$(this).append(`<input type="hidden" name="type_of_user" value=`${type_of_user}`>`);
+    //   return true;
+    // });
+  });
+
+  // Submit save form
+  // language=JQuery-CSS
+  $('#btn-new-save').on('click', function (){
+    var new_from = $('#form-new-user');
+    if(new_from.valid()){
+      new_from.submit();
+    }
+  });
+
+  // On-click new button
+  $('#btn-new').on('click', function(){
+    $('input[value="admin"]').attr('checked', true);
+    $('input[value="admin"]').parents().addClass('checked');
+    $('#modal-new').modal({
+      backdrop: 'static',
+      show: true
+    });
+  });
+
 });
