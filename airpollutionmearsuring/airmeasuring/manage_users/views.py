@@ -2,10 +2,7 @@ from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.views import View
-from django.views.generic.base import TemplateView
-from airmeasuring.api.serializers import UserSerialization
-from rest_framework.response import Response
-from rest_framework import status
+from api.serializers import UserSerialization
 from django.contrib.auth.models import User
 from django.contrib import messages
 

@@ -89,12 +89,16 @@
   <script src="{% static 'project/gentelella/vendors/devbridge-autocomplete/dist/jquery.autocomplete.min.js' %}"></script>
   <!-- starrr -->
   <script src="{% static 'project/gentelella/vendors/starrr/dist/starrr.js' %}"></script>
-
+  <!-- jquery validation -->
+  <script src="{% static 'project/jquery_validation/js/jquery.validate.min.js' %}"></script>
+  <script src="{% static 'project/jquery_validation/js/additional-methods.min.js' %}"></script>
   <!-- Extra javascript -->
   {% block extra_script %}
 
   {% endblock %}
-  <!-- Custom Theme Scripts -->
-  <script src="{% static 'project/gentelella/build/js/custom.js' %}"></script>
+  <!-- Custom Theme Scripts: omit because it's just been used for demo-->
+{#  <script src="{% static 'project/gentelella/build/js/custom.js' %}"></script>#}
+  <!-- Document ready -->
+  <script src="{% static 'project/general-config.js' %}"></script>
 </body>
 </html>

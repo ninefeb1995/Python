@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'custom_auth',
     'api',
     'manage_users',
+    'manage_devices',
+    'report',
     #third-parties-apps
     'widget_tweaks',
     'rest_framework',

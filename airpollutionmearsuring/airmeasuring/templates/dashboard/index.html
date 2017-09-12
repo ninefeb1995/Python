@@ -3,7 +3,98 @@
 
 {% block content %}
   <div class="right_col" role="main">
+    <div class="row top_tiles">
+        <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="tile-stats">
+                <div class="icon"><i class="fa fa-gears"></i></div>
+                <div class="count" id="device_count"></div>
+                <h3>Devices</h3>
+                <p>To measure the atmosphere</p>
+            </div>
+        </div>
+         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="tile-stats">
+                <div class="icon"><i class="fa fa-hdd-o"></i></div>
+                <div class="count" id="gateway_count"></div>
+                <h3>Gateways</h3>
+                <p>To send data to server</p>
+            </div>
+        </div>
+         <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <div class="tile-stats">
+                <div class="icon"><i class="fa fa-globe"></i></div>
+                <div class="count" id="area_count"></div>
+                <h3>Areas</h3>
+                <p>The places to measure data</p>
+            </div>
+        </div>
+    </div>
 
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+          <div id="chart-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="dashboard_graph x_panel">
+          <div class="row x_title">
+            <div class="col-md-6">
+              <h3>Air Measurement <small>Graph title sub-title</small></h3>
+            </div>
+            <div class="col-md-6">
+              <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px;">
+                <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp;
+                <span></span> <b class="caret"></b>
+              </div>
+              <div class="pull-right">
+              {% if areas %}
+                <ul class="nav nav-pills" role="tablist">
+                  <li id="area-header" role="presentation" class="dropdown">
+                    <a style="background: #fff; cursor: pointer; padding: 5px 10px;" href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" role="button" aria-expanded="false">
+                      <span>{{ areas.0.name }} - {{ areas.0.district }}</span>
+                      <span class="caret"></span>
+                      <input id="area-dropdown-list-activated" type="hidden" value="{{ areas.0.id }}" />
+                    </a>
+                    <ul class="dropdown-menu animated fadeInDown area-dropdown-list" role="menu">
+                      {% for area in areas %}
+                        <li value="{{ area.id }}" role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);">{{ area.name }} - {{ area.district }}</a></li>
+                      {% endfor %}
+                    </ul>
+                  </li>
+                </ul>
+              {% endif %}
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-9 col-sm-9 col-xs-12">
+            <canvas id="lineChart"></canvas>
+          </div>
+
+          <div class="col-md-3 col-sm-3 col-xs-12 bg-white">
+            <div class="x_title">
+              <h2>Percentage of gases</h2> <!--Phần trăm thể tích từng khí so với không khí-->
+              <div class="clearfix"></div>
+            </div>
+            <div class="col-md-12 col-sm-12 col-xs-6">
+              <div>
+                <p>Carbon monoxide</p>
+                <div class="">
+                  <div class="progress progress_sm" style="width: 76%;">
+                    <div class="progress-bar bg-green" role="progressbar" data-transitiongoal="1"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 {% endblock content %}
 
@@ -11,7 +102,7 @@
 {% block extra_script %}
   <!-- Chart.js -->
   <script src="{% static 'project/gentelella/vendors/Chart.js/dist/Chart.min.js' %}"></script>
-  <!-- gauge.js -->
+  <!-- Gauge.js -->
   <script src="{% static 'project/gentelella/vendors/gauge.js/dist/gauge.min.js' %}"></script>
   <!-- Skycons -->
   <script src="{% static 'project/gentelella/vendors/skycons/skycons.js' %}"></script>
@@ -31,4 +122,13 @@
   <script src="{% static 'project/gentelella/vendors/jqvmap/dist/jquery.vmap.js' %}"></script>
   <script src="{% static 'project/gentelella/vendors/jqvmap/dist/maps/jquery.vmap.world.js' %}"></script>
   <script src="{% static 'project/gentelella/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js' %}"></script>
+  <!-- Morris.js -->
+  <script src="{% static 'project/gentelella/vendors/raphael/raphael.min.js' %}"></script>
+  <script src="{% static 'project/gentelella/vendors/morris.js/morris.min.js' %}"></script>
+	 <!--Fusion chart -->
+  <script type="text/javascript" src="{% static 'project/fusion_chart/js/fusioncharts.js' %}"></script>
+  <script type="text/javascript" src="{% static 'project/fusion_chart/js/fusioncharts.charts.js' %}"></script>
+  <script type="text/javascript" src="{% static 'project/fusion_chart/js/themes/fusioncharts.theme.fint.js' %}"></script>
+	<!--Dashboard javascript-->
+	<script src="{% static 'project/dashboard/js/dashboard.js' %}"></script>
 {% endblock %}

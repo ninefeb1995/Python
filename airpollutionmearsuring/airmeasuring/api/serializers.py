@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
+from dashboard.models import Area, Data, Node
 
 
 class UserSerialization(serializers.ModelSerializer):
@@ -29,3 +30,24 @@ class UserSerialization(serializers.ModelSerializer):
         instance.is_staff = validated_data.get('is_staff', instance.is_staff)
         instance.save()
         return instance
+
+
+class AreaSerialization(serializers.ModelSerializer):
+
+    class Meta:
+        model = Area
+        fields = '__all__'
+
+
+class DataSerialization(serializers.ModelSerializer):
+
+    class Meta:
+        model = Data
+        fields = '__all__'
+
+
+class NodeSerialization(serializers.ModelSerializer):
+
+    class Meta:
+        model = Node
+        fields = '__all__'
