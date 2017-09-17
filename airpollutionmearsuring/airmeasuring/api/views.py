@@ -3,7 +3,8 @@ from rest_framework import viewsets
 from . import serializers
 from . import permissions
 from django.contrib.auth.models import User
-from dashboard.models import Area, Data, Node
+from dashboard.models import Area, Data
+from manage_devices.models import Node
 
 
 class UserModelViewSet(viewsets.ModelViewSet):

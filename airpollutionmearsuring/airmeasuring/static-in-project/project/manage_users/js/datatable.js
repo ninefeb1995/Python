@@ -14,7 +14,6 @@ $(document).ready(function () {
         else {
           return "Staff";
         }
-
       }},
       { title: 'Last Activity', data: 'last_login', render: function (data) {
         var date = new Date(data);
@@ -22,8 +21,8 @@ $(document).ready(function () {
         return date.getDate() + "/" + (month.length > 1 ? month : "0" + month) + "/" + date.getFullYear();
       }},
       { title: 'Action', data: '', render: function (id) {
-        var html = `<a href="" class="btn btn-sm btn-flat bg-purple"><i class="fa fa-edit"></i>Edit</a>
-                    <a href="#" class="btn btn-sm  btn-flat btn-danger"><i class="fa fa-trash"></i>Delete</a>
+        var html = `<a href="" class="btn btn-sm btn-flat bg-purple"><i class="fa fa-edit"></i> Edit</a>
+                    <a href="#" class="btn btn-sm  btn-flat btn-danger"><i class="fa fa-trash"></i> Delete</a>
                     `;
         return html;
       }}
@@ -48,8 +47,12 @@ $(document).ready(function () {
     if(`${data.is_superuser}` === 'true'){
       $('input[value="admin"]').attr('checked', true);
       $('input[value="admin"]').parents().addClass('checked');
+      $('input[value="staff"]').removeAttr('checked');
+      $('input[value="staff"]').parents().removeClass('checked');
     }
     else {
+      $('input[value="admin"]').removeAttr('checked');
+      $('input[value="admin"]').parents().removeClass('checked');
       $('input[value="staff"]').attr('checked', true);
       $('input[value="staff"]').parents().addClass('checked');
     }
@@ -85,8 +88,15 @@ $(document).ready(function () {
 
   // On-click new button
   $('#btn-new').on('click', function(){
+    $('[name="username"]').val("");
+    $('[name="password"]').val("");
+    $('[name="first_name"]').val("");
+    $('[name="last_name"]').val("");
+    $('[name="email"]').val("");
     $('input[value="admin"]').attr('checked', true);
     $('input[value="admin"]').parents().addClass('checked');
+    $('input[value="staff"]').removeAttr('checked');
+    $('input[value="staff"]').parents().removeClass('checked');
     $('#modal-new').modal({
       backdrop: 'static',
       show: true

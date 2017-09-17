@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Area, Data, Node
+from setuptools.ssl_support import is_available
+
+from .models import Area, Data
+from manage_devices.models import Node
 from datetime import datetime
 from django.http import JsonResponse
 from api.serializers import DataSerialization, NodeSerialization
@@ -30,12 +33,13 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
 
         node_count = Node.objects.count()
         gateway_count = Node.objects.filter(role='node_gateway').count()
-
+        active_node_count = Node.objects.filter(is_available=True).count()
         area_count = Area.objects.count()
 
         dict_data = {
             'data': data_serialized.data,
             'node_count': node_count,
+            'active_node_count': active_node_count,
             'gateway_count': gateway_count,
             'area_count': area_count
         }

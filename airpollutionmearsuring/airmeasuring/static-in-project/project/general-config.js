@@ -43,7 +43,7 @@ $(document).ready(function () {
 
   // Sidebar
   function init_sidebar() {
-    // TODO: This is some kind of easy fix, maybe we can improve this
+    // We need to improve: This is some kind of easy fix, maybe we can improve this
     var setContentHeight = function() {
         // reset height
         $RIGHT_COL.css('min-height', $(window).height());
@@ -171,14 +171,23 @@ $(document).ready(function () {
   if ($('input.flat')[0]) {
     $(document).ready(function() {
       $('input.flat').iCheck({
-          checkboxClass: 'icheckbox_flat-green',
-          radioClass: 'iradio_flat-green'
+        checkboxClass: 'icheckbox_flat-green',
+        radioClass: 'iradio_flat-green'
+      });
+      $('input.flat').on('ifChecked', function(event){
+        if(this.value === "node_gateway"){
+          $('.gateway_id').hide();
+        }
+        else {
+          $('.gateway_id').show();
+        }
       });
     });
   }
+
   // /iCheck
 
-  // Validate creating and mofidying user
+  // Validate creating and modifying user
   $('#form-new-user, #form-edit-user').each(function () {
     $(this).validate({
       rules: {
@@ -189,6 +198,26 @@ $(document).ready(function () {
           required: true
         },
         email: {
+          required: true
+        }
+      }
+    });
+  });
+
+  // Validate creating and modifying device
+  $('#form-new-device, #form-edit-device').each(function () {
+    $(this).validate({
+      rules:{
+        node_name: {
+          required: true
+        },
+        node_identification: {
+          required: true
+        },
+        node_area: {
+          required: true
+        },
+        node_gateway_id: {
           required: true
         }
       }

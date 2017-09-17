@@ -56,6 +56,7 @@ $(document).ready(function () {
         var data_objects = JSON.parse(xmlHttp.responseText);
 
         $('#device_count').text(data_objects.node_count);
+        $('#active_device_count').text(data_objects.active_node_count);
         $('#gateway_count').text(data_objects.gateway_count);
         $('#area_count').text(data_objects.area_count);
 
