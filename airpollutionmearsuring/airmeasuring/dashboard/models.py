@@ -1,6 +1,5 @@
 from django.db import models
-from datetime import datetime
-from manage_devices.models import Node
+from django.utils import timezone
 
 
 class RawData(models.Model):
@@ -15,7 +14,7 @@ class RawData(models.Model):
 class Data(models.Model):
     co = models.FloatField()
     oxi = models.FloatField()
-    measuring_date = models.DateField(default=datetime.now().date())
+    measuring_date = models.DateField(default=timezone.now())
     area = models.ForeignKey('Area', on_delete=models.CASCADE)
 
 
@@ -27,3 +26,6 @@ class Area(models.Model):
 
     def __str__(self):
         return self.name
+
+
+

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Node(models.Model):
@@ -10,6 +11,7 @@ class Node(models.Model):
     is_available = models.BooleanField(default=False)
     longitude = models.CharField(max_length=255, null=True)
     latitude = models.CharField(max_length=255, null=True)
+    last_connect = models.DateTimeField(default=timezone.now())
 
     def __str__(self):
         return self.name

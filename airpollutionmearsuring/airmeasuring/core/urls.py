@@ -19,12 +19,15 @@ from django.contrib import admin
 from django.conf import settings
 
 urlpatterns = [
-    url(r'^', include('custom_auth.urls')),
+    url(r'^', include('introduction.urls')),
+    url(r'^introduction/', include('introduction.urls', namespace='introduction')),
+    url(r'^authen', include('custom_auth.urls', namespace='custom_auth')),
     url(r'^dashboard/', include('dashboard.urls', namespace='dashboard')),
     url(r'^api/', include('api.urls', namespace='api')),
     url(r'^manage-users/', include('manage_users.urls', namespace='manage_users')),
     url(r'^manage-devices/', include('manage_devices.urls', namespace='manage_devices')),
     url(r'^report/', include('report.urls', namespace='report')),
+
 ]
 
 if settings.DEBUG:

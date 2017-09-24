@@ -103,6 +103,7 @@
         </div>
       </div>
     </div>
+
   </div>
 {% endblock content %}
 
@@ -110,33 +111,35 @@
 {% block extra_script %}
   <!-- Chart.js -->
   <script src="{% static 'project/gentelella/vendors/Chart.js/dist/Chart.min.js' %}"></script>
-  <!-- Gauge.js -->
-  <script src="{% static 'project/gentelella/vendors/gauge.js/dist/gauge.min.js' %}"></script>
-  <!-- Skycons -->
-  <script src="{% static 'project/gentelella/vendors/skycons/skycons.js' %}"></script>
-  <!-- Flot -->
-  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.pie.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.time.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.stack.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.resize.js' %}"></script>
-  <!-- Flot plugins -->
-  <script src="{% static 'project/gentelella/vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/flot.curvedlines/curvedLines.js' %}"></script>
-  <!-- DateJS -->
-  <script src="{% static 'project/gentelella/vendors/DateJS/build/date.js' %}"></script>
-  <!-- JQVMap -->
-  <script src="{% static 'project/gentelella/vendors/jqvmap/dist/jquery.vmap.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/jqvmap/dist/maps/jquery.vmap.world.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js' %}"></script>
+{#  <!-- Gauge.js -->#}
+{#  <script src="{% static 'project/gentelella/vendors/gauge.js/dist/gauge.min.js' %}"></script>#}
+{#  <!-- Skycons -->#}
+{#  <script src="{% static 'project/gentelella/vendors/skycons/skycons.js' %}"></script>#}
+{#  <!-- Flot -->#}
+{#  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.pie.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.time.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.stack.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/Flot/jquery.flot.resize.js' %}"></script>#}
+{#  <!-- Flot plugins -->#}
+{#  <script src="{% static 'project/gentelella/vendors/flot.orderbars/js/jquery.flot.orderBars.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/flot-spline/js/jquery.flot.spline.min.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/flot.curvedlines/curvedLines.js' %}"></script>#}
+{#  <!-- DateJS -->#}
+{#  <script src="{% static 'project/gentelella/vendors/DateJS/build/date.js' %}"></script>#}
+{#  <!-- JQVMap -->#}
+{#  <script src="{% static 'project/gentelella/vendors/jqvmap/dist/jquery.vmap.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/jqvmap/dist/maps/jquery.vmap.world.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js' %}"></script>#}
   <!-- Morris.js -->
-  <script src="{% static 'project/gentelella/vendors/raphael/raphael.min.js' %}"></script>
-  <script src="{% static 'project/gentelella/vendors/morris.js/morris.min.js' %}"></script>
+{#  <script src="{% static 'project/gentelella/vendors/raphael/raphael.min.js' %}"></script>#}
+{#  <script src="{% static 'project/gentelella/vendors/morris.js/morris.min.js' %}"></script>#}
 	 <!--Fusion chart -->
   <script type="text/javascript" src="{% static 'project/fusion_chart/js/fusioncharts.js' %}"></script>
   <script type="text/javascript" src="{% static 'project/fusion_chart/js/fusioncharts.charts.js' %}"></script>
   <script type="text/javascript" src="{% static 'project/fusion_chart/js/themes/fusioncharts.theme.fint.js' %}"></script>
+  <!--Google map api-->
+
 	<!--Dashboard javascript-->
 	<script src="{% static 'project/dashboard/js/dashboard.js' %}"></script>
 {% endblock %}

@@ -25,6 +25,9 @@
     <div class="menu_section">
       <h3>General</h3>
       <ul class="nav side-menu">
+         <li>
+          <a href="{% url 'introduction:index' %}"><i class="fa fa-desktop"></i> Introduction</a>
+        </li>
         <li>
           <a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
         </li>
@@ -58,7 +61,7 @@
     <a data-toggle="tooltip" data-placement="top" title="Lock">
       <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>
     </a>
-    <a data-toggle="tooltip" data-placement="top" title="Logout" href="{% url 'logout' %}">
+    <a data-toggle="tooltip" data-placement="top" title="Logout" href="{% url 'custom_auth:logout' %}">
       <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
     </a>
   </div>

@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -38,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # third-parties-apps
+    'widget_tweaks',
+    'rest_framework',
     # my apps
     'manage_devices',
     'dashboard',
@@ -45,9 +49,7 @@ INSTALLED_APPS = [
     'api',
     'manage_users',
     'report',
-    # third-parties-apps
-    'widget_tweaks',
-    'rest_framework',
+    'introduction',
 ]
 
 MIDDLEWARE = [
@@ -138,8 +140,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static-in-project"),
 )
 
-LOGIN_REDIRECT_URL = '/index'
-LOGIN_URL = '/login'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/authen/login'
 
 # RESTful API
 REST_FRAMEWORK = {
