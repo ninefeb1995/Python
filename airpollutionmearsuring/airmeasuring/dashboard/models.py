@@ -10,6 +10,9 @@ class RawData(models.Model):
     node_name = models.CharField(max_length=255)  # This field is to ensure data belonged
     # to what when node has been deleted
 
+    class Meta:
+        get_latest_by = "measuring_date"
+
 
 class Data(models.Model):
     co = models.FloatField()
@@ -26,6 +29,4 @@ class Area(models.Model):
 
     def __str__(self):
         return self.name
-
-
 

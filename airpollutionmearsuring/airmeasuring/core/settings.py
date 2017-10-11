@@ -159,3 +159,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'api.pagination.CustomPagination',
     'PAGE_SIZE': 10
 }
+
+# REDIS_SSEQUEUE_CONNECTION_SETTINGS = {
+#     'location': 'localhost:6379',
+#     'db': 0,
+# }

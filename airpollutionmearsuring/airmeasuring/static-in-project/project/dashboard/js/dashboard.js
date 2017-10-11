@@ -1,5 +1,44 @@
 $(document).ready(function () {
 
+  var chartConfig =  [{
+              "caption": "CO",
+              "subCaption": "",
+              "xAxisName": "Time",
+              "yAxisName": "Value",
+              "numberPrefix": "%",
+              "refreshinterval": "2",
+              "numdisplaysets": "20",
+              "showValues": "0",
+              "showRealTimeValue": "0",
+              "theme": "fint"}, {
+              "caption": "Oxi",
+              "subCaption": "",
+              "xAxisName": "Time",
+              "yAxisName": "Value",
+              "numberPrefix": "%",
+              "refreshinterval": "2",
+              "numdisplaysets": "20",
+              "showValues": "0",
+              "showRealTimeValue": "0",
+              "theme": "fint"
+            }];
+  var data = [{}];
+  // var trendLines = [{
+  //               "line": [{
+  //                 "startValue": "1",
+  //                 "endValue": "3",
+  //                 "color": "#ff8585",
+  //                 "displayValue": "Standard",
+  //                 "isTrendZone": "1",
+  //                 "valueOnRight": "1",
+  //                 "dashed": "1"
+  //               }]
+  //           }];
+  var trendLines = null;
+
+  render_realtime_chart('airmeasuringco', 'chart-container-1', '100%', '0', chartConfig[0], data, trendLines, 'co');
+  render_realtime_chart('airmeasuringoxi', 'chart-container-2', '100%', '0', chartConfig[1], data, trendLines, 'oxi');
+
   // Handling on click event for area drop down list
   $('.area-dropdown-list li').on('click', function (event) {
 
@@ -122,67 +161,55 @@ $(document).ready(function () {
 
     });
   }
-});
 
-//The `FusionCharts.register()` API is used to register the new theme in the FusionCharts core.
-FusionCharts.ready(function() {
-  var fusioncharts = new FusionCharts({
-      id: "stockRealTimeChart",
-      type: 'realtimeline',
-      renderAt: 'chart-container',
-      width: '1000',
-      height: '600',
-      dataFormat: 'json',
-      dataSource: {
-          "chart": {
-              "caption": "Real time mearsuring data",
-              "subCaption": "Application",
-              "xAxisName": "Time",
-              "yAxisName": "Value",
-              "numberPrefix": "%",
-              "refreshinterval": "2",
-              "numdisplaysets": "50",
-              "showValues": "0",
-              "showRealTimeValue": "0",
-              "theme": "fint"
+  //The `FusionCharts.register()` API is used to register the new theme in the FusionCharts core.
+  function render_realtime_chart(id, renderAt, width, height, chartConfig, data, trendLines, kind_of_data) {
+      FusionCharts.ready(function() {
+        var fusioncharts = new FusionCharts({
+          id:  id.toString(),
+          type: 'realtimeline',
+          renderAt: renderAt.toString(),
+          width: width.toString(),
+          dataFormat: 'json',
+          dataSource: {
+            "chart": chartConfig,
+            "dataset": [{
+                "data": data
+            }],
+            "trendlines": trendLines
           },
-          "dataset": [{
-              "data": [{}]
-          }],
-          "trendlines": [{
-              "line": [{
-                "startValue": "1",
-                "endValue": "3",
-                "color": "#ff8585",
-                "displayValue": "Standard",
-                "isTrendZone": "1",
-                "valueOnRight": "1",
-                "dashed": "1"
-              }]
-          }]
-      },
-      "events": {
-          "initialized": function (e) {
-              function updateData() {
-                  // Get reference to the chart using its ID
-                  var chartRef = FusionCharts("stockRealTimeChart"),
-                      // Get random number
-                      randomValue = Math.random(),
-                      // Build Data String in format &label=...&value=...
-                      strData = "&value=" + randomValue;
-                  // Feed it to chart.
-                  chartRef.feedData(strData);
+          "events": {
+            "initialized": function (e) {
+                // function updateData() {
+                //     // Get reference to the chart using its ID
+                //     var chartRef = FusionCharts(id.toString()),
+                //         // Get random number
+                //         randomValue = Math.random(),
+                //         // Build Data String in format &label=...&value=...
+                //         strData = "&value=" + randomValue;
+                //     // Feed it to chart.
+                //     chartRef.feedData(strData);
+                // }
+                // e.sender.chartInterval = setInterval(function () {
+                //     updateData();
+                // }, 2000);
+              var source = new EventSource(`/dashboard/event-stream/${kind_of_data}`);
+              source.onmessage = function(e) {
+                // var all_data = e.data.split(';'),
+                var all_data = e.data,
+                    charRef = FusionCharts(id.toString()),
+                    strData = "&value=" + all_data;
+                charRef.feedData(strData);
               }
-
-              e.sender.chartInterval = setInterval(function () {
-                  updateData();
-              }, 2000);
-          },
-          "disposed": function (evt, arg) {
-              clearInterval(evt.sender.chartInterval);
+            },
+            "disposed": function (evt, arg) {
+                // clearInterval(evt.sender.chartInterval);
+            }
           }
-      }
-  });
-  fusioncharts.render();
+        });
+        fusioncharts.render();
+    });
+  }
 });
+
 

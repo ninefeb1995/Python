@@ -126,7 +126,6 @@ $(document).ready(function () {
       'mapsApiKey': 'AIzaSyBqZkodGaG-lTwl1y2EiT4dFfk99FMSytQ'
     });
     google.charts.setOnLoadCallback(drawMap);
-
     function drawMap () {
 
       var nodes = [];
@@ -188,5 +187,4 @@ $(document).ready(function () {
 
       map.draw(data, options);
     }
-
 });

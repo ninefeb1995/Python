@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from . import serializers
 from . import permissions
 from django.contrib.auth.models import User
-from dashboard.models import Area, Data
+from dashboard.models import Area, Data, RawData
 from manage_devices.models import Node
 
 
@@ -22,6 +22,12 @@ class AreaModelViewSet(viewsets.ModelViewSet):
 class DataModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.DataSerialization
     queryset = Data.objects.all()
+    permission_classes = (permissions.IsAdminPermission,)
+
+
+class RawDataModelViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.RawDataSerialization
+    queryset = RawData.objects.all()
     permission_classes = (permissions.IsAdminPermission,)
 
 

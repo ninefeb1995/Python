@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.conf import settings
+
 
 urlpatterns = [
     url(r'^', include('introduction.urls')),
@@ -27,7 +27,6 @@ urlpatterns = [
     url(r'^manage-users/', include('manage_users.urls', namespace='manage_users')),
     url(r'^manage-devices/', include('manage_devices.urls', namespace='manage_devices')),
     url(r'^report/', include('report.urls', namespace='report')),
-
 ]
 
 if settings.DEBUG:
