@@ -8,6 +8,7 @@ from django.http import JsonResponse
 from api.serializers import DataSerialization, NodeSerialization, RawDataSerialization
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
+from django.utils import timezone
 
 
 class DashBoardView(LoginRequiredMixin, View):
@@ -31,12 +32,17 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
 
         node_count = Node.objects.count()
         gateway_count = Node.objects.filter(role='node_gateway').count()
-        active_node_count = Node.objects.filter(is_available=True).count()
+        active_node = Node.objects.filter(is_available=True)
+        active_node_serialized = NodeSerialization(data=active_node, many=True)
+        active_node_serialized.is_valid()
+        active_node_count = active_node.count()
+
         area_count = Area.objects.count()
 
         dict_data = {
             'data': data_serialized.data,
             'node_count': node_count,
+            'active_node': active_node_serialized.data,
             'active_node_count': active_node_count,
             'gateway_count': gateway_count,
             'area_count': area_count
@@ -47,18 +53,32 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
 
 class DashBoardEventStream(LoginRequiredMixin, View):
 
-    def eventstream(self, type_of_data):
-        latest_object = RawData.objects.latest()
-        if latest_object:
-            if type_of_data.upper() == 'co':
-                stream = 'data:' + str(latest_object.co) + '\n\n'
-            else:  # type_of_data.upper() == 'oxi'
-                stream = 'data:' + str(latest_object.oxi) + '\n\n'
-            yield stream
+    def eventstream(self, name_of_node):
+        node_name = name_of_node.replace("+", " ")
+        last_connection = Node.objects.filter(name=node_name)[0].last_connect
+        now = timezone.now()
+        last_activity = now - last_connection
+        if last_activity.total_seconds() > 10:
+            return True
+        latest_object = RawData.objects.filter(node_name=node_name).latest()
+        stream = '&value=' + str(latest_object.co) + '|' + str(latest_object.nitrogen)
+        yield stream
+        # if latest_object:
+        #     if name_of_node == 'co':
+        #         # stream = 'event: co\n'
+        #         # stream = 'data:' + str(latest_object.co) + '\n\n'
+        #         stream = '&value=' + str(latest_object.co)
+        #     else:  # type_of_data.upper() == 'oxi'
+        #         # stream = 'event: oxi\n'
+        #         # stream = 'data:' + str(latest_object.oxi) + '\n\n'
+        #         stream = '&value=' + str(latest_object.oxi)
+        #     yield stream
 
     @csrf_exempt
-    def get(self, request, type_of_data):
-        response = HttpResponse(self.eventstream(type_of_data), content_type="text/event-stream")
+    def get(self, request, name_of_node):
+        if self.eventstream(name_of_node):
+            return
+        response = HttpResponse(self.eventstream(name_of_node), content_type="text/event-stream")
         response['Cache-Control'] = 'no-cache'
         return response
 

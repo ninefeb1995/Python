@@ -4,7 +4,10 @@ from django.utils import timezone
 
 class RawData(models.Model):
     co = models.FloatField()
-    oxi = models.FloatField()
+    nitrogen = models.FloatField()
+    sulphur = models.FloatField()
+    pmten = models.FloatField()
+    ozone = models.FloatField()
     measuring_date = models.DateTimeField(auto_created=True)
     node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)
     node_name = models.CharField(max_length=255)  # This field is to ensure data belonged
@@ -16,9 +19,13 @@ class RawData(models.Model):
 
 class Data(models.Model):
     co = models.FloatField()
-    oxi = models.FloatField()
+    nitrogen = models.FloatField()
+    sulphur = models.FloatField()
+    pmten = models.FloatField()
+    ozone = models.FloatField()
     measuring_date = models.DateField(default=timezone.now())
     area = models.ForeignKey('Area', on_delete=models.CASCADE)
+    node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)
 
 
 class Area(models.Model):
@@ -30,3 +37,8 @@ class Area(models.Model):
     def __str__(self):
         return self.name
 
+
+class AQI(models.Model):
+    value = models.FloatField()
+    of_date = models.DateField(default=timezone.now())
+    node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)

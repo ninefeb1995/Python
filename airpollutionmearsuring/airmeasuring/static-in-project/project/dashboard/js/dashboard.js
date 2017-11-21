@@ -1,44 +1,5 @@
 $(document).ready(function () {
 
-  var chartConfig =  [{
-              "caption": "CO",
-              "subCaption": "",
-              "xAxisName": "Time",
-              "yAxisName": "Value",
-              "numberPrefix": "%",
-              "refreshinterval": "2",
-              "numdisplaysets": "20",
-              "showValues": "0",
-              "showRealTimeValue": "0",
-              "theme": "fint"}, {
-              "caption": "Oxi",
-              "subCaption": "",
-              "xAxisName": "Time",
-              "yAxisName": "Value",
-              "numberPrefix": "%",
-              "refreshinterval": "2",
-              "numdisplaysets": "20",
-              "showValues": "0",
-              "showRealTimeValue": "0",
-              "theme": "fint"
-            }];
-  var data = [{}];
-  // var trendLines = [{
-  //               "line": [{
-  //                 "startValue": "1",
-  //                 "endValue": "3",
-  //                 "color": "#ff8585",
-  //                 "displayValue": "Standard",
-  //                 "isTrendZone": "1",
-  //                 "valueOnRight": "1",
-  //                 "dashed": "1"
-  //               }]
-  //           }];
-  var trendLines = null;
-
-  render_realtime_chart('airmeasuringco', 'chart-container-1', '100%', '0', chartConfig[0], data, trendLines, 'co');
-  render_realtime_chart('airmeasuringoxi', 'chart-container-2', '100%', '0', chartConfig[1], data, trendLines, 'oxi');
-
   // Handling on click event for area drop down list
   $('.area-dropdown-list li').on('click', function (event) {
 
@@ -49,7 +10,7 @@ $(document).ready(function () {
     var area = element.val(); // get area id to show data on chart
 
     $('#area-header').find('span').first().text(element_child.text()); // show what area-in-text has been chosen by this event
-    $('#area-dropdown-list-activated').val(area); // concurrent, passing area_id to hidden input inside <a> tag
+    $('#area-dropdown-list-activated').val(area); // concurrent, passing area_id to hidden-input inside <a> tag
 
 
     var date_range = $('#reportrange').data('daterangepicker'); // get date range from date range picker to show data
@@ -67,7 +28,7 @@ $(document).ready(function () {
       var area = $('#area-dropdown-list-activated').val();
       renderChart(area, date_start, date_end);
   });
-  
+
   // Handle when first loaded
   window.onload = function() {
     var date_range = reportdate.data('daterangepicker'); // get date range from date range picker to show data
@@ -77,7 +38,7 @@ $(document).ready(function () {
     renderChart(area, date_start, date_end);
   };
 
-  // Function been responsible for rendering the line chart
+  // Function responsible for rendering the line chart
   function renderChart(area, start, end){
     $.ajax({
       url: '/dashboard/observation/',
@@ -99,19 +60,27 @@ $(document).ready(function () {
         $('#gateway_count').text(data_objects.gateway_count);
         $('#area_count').text(data_objects.area_count);
 
-        var co_data = [];
-        var oxi_data = [];
-	      var date_data = [];
+        // Rendering html-divs for real-time charts
+        var active_node = data_objects.active_node;
+        for(var i = 0; i < data_objects.active_node_count; i++) {
+          var name = active_node[i].name.replace(" ", "").toLowerCase(),
+              id = "chart-container-" + name;
+          $('.real_time').append(`<div id="${id}" style="width: 50%; float: left;"></div>`);
+          render_realtime_chart(name, active_node[i].name, id, '100%', 0, null, null, null, active_node[i].name.replace(" ", "+"));
+        }
+
+        var co_data = [],
+            nitrogen_data = [],
+	          date_data = [];
 
         $.each(data_objects.data, function (index, item) {
           co_data.push(item.co);
-	        oxi_data.push(item.oxi);
+	        nitrogen_data.push(item.nitrogen);
 	        date_data.push(item.measuring_date);
         });
-        var lineChart = $('#lineChart');
+        var lineChart = $('#lineChart'),
 
-
-        var dataFirst = {
+        dataFirst = {
           label: "CO",
           data: co_data,
           backgroundColor: 'transparent',
@@ -122,26 +91,26 @@ $(document).ready(function () {
           pointHitRadius: 20,
           pointBorderWidth: 2,
           pointStyle: 'rect'
-        };
+        },
 
-        var dataSecond = {
-            label: "Oxi",
-            data: oxi_data,
-            backgroundColor: 'transparent',
-            borderColor: 'rgba(151,187,205,1)',
-            pointBorderColor: 'rgba(151,187,205,1)',
-            pointRadius: 5,
-            pointHoverRadius: 10,
-            pointHitRadius: 20,
-            pointBorderWidth: 2
-          };
+        dataSecond = {
+          label: "NO2",
+          data: nitrogen_data,
+          backgroundColor: 'transparent',
+          borderColor: 'rgba(151,187,205,1)',
+          pointBorderColor: 'rgba(151,187,205,1)',
+          pointRadius: 5,
+          pointHoverRadius: 10,
+          pointHitRadius: 20,
+          pointBorderWidth: 2
+        },
 
-        var datasets = {
+        datasets = {
           labels: date_data,
           datasets: [dataFirst, dataSecond]
-        };
+        },
 
-        var chartOptions = {
+        chartOptions = {
           legend: {
             display: true,
             position: 'bottom',
@@ -150,9 +119,9 @@ $(document).ready(function () {
               fontColor: 'black'
             }
           }
-        };
+        },
 
-        var showChart = new Chart(lineChart, {
+        showChart = new Chart(lineChart, {
           type: 'line',
           data: datasets,
           options: chartOptions
@@ -163,53 +132,62 @@ $(document).ready(function () {
   }
 
   //The `FusionCharts.register()` API is used to register the new theme in the FusionCharts core.
-  function render_realtime_chart(id, renderAt, width, height, chartConfig, data, trendLines, kind_of_data) {
-      FusionCharts.ready(function() {
-        var fusioncharts = new FusionCharts({
-          id:  id.toString(),
-          type: 'realtimeline',
-          renderAt: renderAt.toString(),
-          width: width.toString(),
-          dataFormat: 'json',
-          dataSource: {
-            "chart": chartConfig,
-            "dataset": [{
-                "data": data
-            }],
-            "trendlines": trendLines
-          },
-          "events": {
-            "initialized": function (e) {
-                // function updateData() {
-                //     // Get reference to the chart using its ID
-                //     var chartRef = FusionCharts(id.toString()),
-                //         // Get random number
-                //         randomValue = Math.random(),
-                //         // Build Data String in format &label=...&value=...
-                //         strData = "&value=" + randomValue;
-                //     // Feed it to chart.
-                //     chartRef.feedData(strData);
-                // }
-                // e.sender.chartInterval = setInterval(function () {
-                //     updateData();
-                // }, 2000);
-              var source = new EventSource(`/dashboard/event-stream/${kind_of_data}`);
-              source.onmessage = function(e) {
-                // var all_data = e.data.split(';'),
-                var all_data = e.data,
-                    charRef = FusionCharts(id.toString()),
-                    strData = "&value=" + all_data;
-                charRef.feedData(strData);
-              }
-            },
-            "disposed": function (evt, arg) {
-                // clearInterval(evt.sender.chartInterval);
-            }
-          }
-        });
-        fusioncharts.render();
+  function render_realtime_chart(id, name_chart, renderAt, width, height, chartConfig, data, trendLines, name_of_node) {
+    FusionCharts.ready(function() {
+    var fusioncharts = new FusionCharts({
+      id: id.toString(),
+      type: 'realtimeline',
+      renderAt: renderAt.toString(),
+      width: width.toString(),
+      dataFormat: 'json',
+      dataSource: {
+      "dataStreamURL": `/dashboard/event-stream/${name_of_node}`,
+      "chart": [{
+              "caption": name_chart.toString(),
+              "subCaption": "",
+              "xAxisName": "Time",
+              "yAxisName": "Value",
+              "numberPrefix": "%",
+              "refreshinterval": "2",
+              "numdisplaysets": "20",
+              "showValues": "0",
+              "showRealTimeValue": "0",
+              "theme": "fint",
+      }],
+      "dataset": [{
+              "seriesname": "CO",
+              "data": [{}]
+          }, {
+              "seriesname": "NO2",
+              "data": [{}]
+          }],
+      "trendlines": null
+      },
+      events: {
+        'beforeRender': function(evt, arg) {
+          var controllers = document.createElement('div'),
+              tableContid = 'tableCont-' + id.toString(),
+              errorView = 'errorView' + id.toString();
+          controllers.setAttribute('id', tableContid);
+          controllers.innerHTML = `<div id=${errorView} style='width: 50%;border: 1px solid #ffbcbc;background-color:#f99898;  color:#ffffff;display:none;padding: 3px;margin-right: auto; margin-left: auto;text-align: center'></div>`;
+          //Display container div and write table
+          arg.container.append(controllers);
+        },
+        'realTimeUpdateError': function(event, parameter) {
+          var dispBox = document.getElementById("errorView" + id.toString());
+          dispBox.style.display = "block";
+          dispBox.innerHTML = "Lost connection !!!";
+        },
+        'realtimeUpdateComplete': function(event, parameter) {
+          var dispBox = document.getElementById("errorView" + id.toString());
+          dispBox.style.display = "none";
+        }
+      }
+    });
+    fusioncharts.render();
     });
   }
+
 });
 
 
