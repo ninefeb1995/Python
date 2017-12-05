@@ -16,7 +16,18 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from django.conf import settings
+from core import views
+from dashboard.models import job_schedule
+from django.utils import timezone
+import threading
+import logging
 
+
+logger = logging.getLogger(__name__)
+logger.info("\n\nServer started on %s \n\n", timezone.now().strftime('%A, %d. %B %Y %I:%M%p'))
+t = threading.Thread(target=job_schedule)
+t.daemon = True
+t.start()
 
 urlpatterns = [
     url(r'^', include('introduction.urls')),
@@ -33,3 +44,8 @@ if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+
+handler403 = views.error403
+handler404 = views.error404
+handler500 = views.error500
+handler400 = views.error400

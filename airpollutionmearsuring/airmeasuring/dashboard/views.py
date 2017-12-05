@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Area, Data, RawData
+from .models import Area, Data, RawData, AQI
 from manage_devices.models import Node
 from datetime import datetime
+from datetime import timedelta
 from django.http import JsonResponse
-from api.serializers import DataSerialization, NodeSerialization, RawDataSerialization
+from api.serializers import DataSerialization, NodeSerialization
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 from django.utils import timezone
@@ -90,3 +91,46 @@ class DashBoardEventStream(LoginRequiredMixin, View):
 #     response = HttpResponse(eventStream(), content_type="text/event-stream")
 #     response['Cache-Control'] = 'no-cache'
 #     return response
+
+
+class DashBoardRawData(View):
+
+    def get(self, request):
+        node_name = request.GET.get('node' or None)
+        co = request.GET.get('co' or None)
+        if node_name and co:
+            get_node_name = Node.objects.get(name=node_name)
+            new_data = RawData(co=co,
+                               node=get_node_name,
+                               node_name=node_name,
+                               measuring_date=timezone.now())
+            new_data.save(force_insert=True)
+            get_node_name.last_connect = timezone.now()
+            get_node_name.save()
+
+
+class DashBoardViewAQIOnMap(View):
+
+    def get(self, request):
+        node_in_active = Node.objects.all()
+        if node_in_active.count() == 0:
+            return
+        day = timezone.now().date() - timedelta(days=1)
+        all_aqi = AQI.objects.all()
+        if all_aqi.count() == 0:
+            return
+        aqis = all_aqi.filter(of_date=day)
+        while aqis.count() == 0:
+            day -= timedelta(days=1)
+            aqis = AQI.objects.filter(of_date=day)
+        data_to_send = {}
+        for aqi in aqis:
+            data_of_node = {
+                'center': {
+                    'lat': float(aqi.node.latitude),
+                    'lng': float(aqi.node.longitude)
+                },
+                'aqi_value': aqi.value
+            }
+            data_to_send[aqi.node.name] = data_of_node
+        return JsonResponse(data_to_send, safe=False)

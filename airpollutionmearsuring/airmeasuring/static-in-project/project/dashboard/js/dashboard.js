@@ -126,6 +126,8 @@ $(document).ready(function () {
           data: datasets,
           options: chartOptions
         });
+
+
       }
 
     });
@@ -187,7 +189,75 @@ $(document).ready(function () {
     fusioncharts.render();
     });
   }
-
 });
 
 
+document.getElementById('census-min').textContent = '0';
+document.getElementById('census-max').textContent = '500';
+var mapStyle = [{
+  'stylers': [{'visibility': 'on'}]
+}, {
+  'featureType': 'landscape',
+  'elementType': 'geometry',
+  'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+}, {
+  'featureType': 'water',
+  'elementType': 'geometry',
+  'stylers': [{'visibility': 'on'}, {'color': '#bfd4ff'}]
+}];
+function initMap() {
+  // Create the map.
+  var map = new google.maps.Map(document.getElementById('visualization-on-map'), {
+    zoom: 15,
+    center: {lat: 10.867949500000002, lng: 106.8074915},
+    styles: mapStyle
+  });
+
+  $.ajax({
+    url: '/dashboard/aqionmap/',
+    data: {
+    },
+    contentType: "application/json; charset=utf-8",
+    type: 'get',
+    dataType: 'json',
+    traditional: true,
+    complete: function (xmlHttp, textStatus) {
+      if (textStatus === 'error') {
+        return;
+      }
+      var data = JSON.parse(xmlHttp.responseText);
+      $.each(data, function (index, value) {
+        var color = "";
+        var aqi = value['aqi_value'];
+        if (aqi <= 50){
+          color = '#66FF6D';
+        }
+        else if (aqi >= 51 && aqi <= 100) {
+          color = '#C2C700';
+        }
+        else if (aqi >= 101 && aqi <= 150) {
+          color = '#C88500';
+        }
+        else if (aqi >= 151 && aqi <= 200) {
+          color = '#F80007';
+        }
+        else if (aqi >= 201 && aqi <= 300) {
+          color = '#af2378';
+        }
+        else {
+          color = '#A00002';
+        }
+        var cityCircle = new google.maps.Circle({
+          strokeColor: color,
+          strokeOpacity: 0.8,
+          strokeWeight: 0.001,
+          fillColor: color,
+          fillOpacity: 0.35,
+          map: map,
+          center: value['center'],
+          radius: 1.6 * 100
+        });
+      });
+  }
+  });
+}

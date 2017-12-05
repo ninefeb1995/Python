@@ -103,11 +103,9 @@
   {% include 'manage_devices/modal-edit.html' %}
   {% include 'manage_devices/modal-new.html' %}
   {% include 'manage_devices/modal-delete.html' %}
+{% endblock content %}
 
-  {% endblock content %}
-
-
-  {% block extra_script %}
+{% block extra_script %}
   <!-- Datatables -->
   <script src="{% static 'project/gentelella/vendors/datatables.net/js/jquery.dataTables.min.js' %}"></script>
   <script src="{% static 'project/gentelella/vendors/datatables.net-bs/js/dataTables.bootstrap.min.js' %}"></script>

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from dashboard.models import Area, Data, RawData
+from dashboard.models import Area, Data, RawData, AQI
 from manage_devices.models import Node
 
 
@@ -57,6 +57,13 @@ class NodeSerialization(serializers.ModelSerializer):
 
     class Meta:
         model = Node
+        fields = '__all__'
+
+
+class AQISerialization(serializers.ModelSerializer):
+
+    class Meta:
+        model = AQI
         fields = '__all__'
 
 

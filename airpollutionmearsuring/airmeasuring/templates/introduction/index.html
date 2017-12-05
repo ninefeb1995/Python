@@ -2,81 +2,139 @@
 {% load staticfiles %}
 
 {% block content %}
-<div class="right_col" role="main">
-  <div class="col-md-12 col-sm-12 col-xs-12">
-    <div class="x_panel">
-      <div class="x_title">
-        <h2>The IoT application measuring air pollution <small>University of Information Technology</small></h2>
-        <ul class="nav navbar-right panel_toolbox">
-          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-          </li>
-        </ul>
-        <div class="clearfix"></div>
-      </div>
-
-      <div class="x_content">
-        <div class="col-xs-3">
-          <!-- Nav tabs -->
-          <ul class="nav nav-tabs tabs-left">
-            <li class="active"><a href="#general" data-toggle="tab">General</a>
-            </li>
-            <li><a href="#aboutus" data-toggle="tab">About us</a>
-            </li>
-            <li><a href="#messages" data-toggle="tab">Messages</a>
-            </li>
-            <li><a href="#settings" data-toggle="tab">Settings</a>
+  <div class="right_col" role="main">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <div class="x_panel">
+        <div class="x_title">
+          <h2>The IoT application measuring air pollution <small>University of Information Technology</small></h2>
+          <ul class="nav navbar-right panel_toolbox">
+            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
             </li>
           </ul>
+          <div class="clearfix"></div>
         </div>
-        <div class="col-xs-9">
-          <!-- Tab panes -->
-          <div class="tab-content">
-            <div class="tab-pane active" id="general">
-              <p class="lead">Air Pollution and Health</p>
-              <p>Air pollution occurs when harmful substances including particulates and biological molecules are
-                introduced into Earth's atmosphere. It may cause diseases, allergies or death of humans;
-                it may also cause harm to other living organisms such as animals and food crops, and may damage
-                the natural or built environment. Human activity and natural processes can both generate air pollution.
-              </p>
-              <p>
-                Substances emitted into the atmosphere by human activity include:
-              </p>
-              <ul>
-                <li>Carbon dioxide (CO2) - Because of its role as a greenhouse gas it has been described as "the leading pollutant" and "the worst climate pollution". Carbon dioxide is a natural component of the atmosphere, essential for plant life and given off by the human respiratory system. This question of terminology has practical effects, for example as determining whether the U.S. Clean Air Act is deemed to regulate CO2 emissions. CO2 currently forms about 405 parts per million (ppm) of earth's atmosphere, compared to about 280 ppm in pre-industrial times, and billions of metric tons of CO2 are emitted annually by burning of fossil fuels.CO2 increase in earth's atmosphere has been accelerating.</li>
-                <li>Sulfur oxides (SOx) - particularly sulfur dioxide, a chemical compound with the formula SO2. SO2 is produced by volcanoes and in various industrial processes. Coal and petroleum often contain sulfur compounds, and their combustion generates sulfur dioxide. Further oxidation of SO2, usually in the presence of a catalyst such as NO2, forms H2SO4, and thus acid rain. This is one of the causes for concern over the environmental impact of the use of these fuels as power sources.</li>
-                <li>Nitrogen oxides (NOx) - Nitrogen oxides, particularly nitrogen dioxide, are expelled from high temperature combustion, and are also produced during thunderstorms by electric discharge. They can be seen as a brown haze dome above or a plume downwind of cities. Nitrogen dioxide is a chemical compound with the formula NO2. It is one of several nitrogen oxides. One of the most prominent air pollutants, this reddish-brown toxic gas has a characteristic sharp, biting odor.</li>
-                <li>Carbon monoxide (CO) - CO is a colorless, odorless, toxic yet non-irritating gas. It is a product of incomplete combustion of fuel such as natural gas, coal or wood. Vehicular exhaust is a major source of carbon monoxide.</li>
-              </ul>
-              <p>Secondary pollutants include:</p>
-              <ul>
-                <li>Particulates created from gaseous primary pollutants and compounds in photochemical smog. Smog is a kind of air pollution. Classic smog results from large amounts of coal burning in an area caused by a mixture of smoke and sulfur dioxide. Modern smog does not usually come from coal but from vehicular and industrial emissions that are acted on in the atmosphere by ultraviolet light from the sun to form secondary pollutants that also combine with the primary emissions to form photochemical smog.</li>
-                <li>Ground level ozone (O3) formed from NOx and VOCs. Ozone (O3) is a key constituent of the troposphere. It is also an important constituent of certain regions of the stratosphere commonly known as the Ozone layer. Photochemical and chemical reactions involving it drive many of the chemical processes that occur in the atmosphere by day and by night. At abnormally high concentrations brought about by human activities (largely the combustion of fossil fuel), it is a pollutant, and a constituent of smog.</li>
-                <li>Peroxyacetyl nitrate (C2H3NO5) - similarly formed from NOx and VOCs.</li>
-              </ul>
-              <p>
-                Health effects:
-                Air pollution is a significant risk factor for a number of pollution-related diseases and health conditions including respiratory infections, heart disease, COPD, stroke and lung cancer. The health effects caused by air pollution may include difficulty in breathing, wheezing, coughing, asthma and worsening of existing respiratory and cardiac conditions. These effects can result in increased medication use, increased doctor or emergency room visits, more hospital admissions and premature death.
-              </p>
-            </div>
-            <div class="tab-pane" id="aboutus">
-              <p class="lead">What we do</p>
-              <p>
 
-              </p>
-            </div>
-            <div class="tab-pane" id="messages">
-              Messages Tab.
-            </div>
-            <div class="tab-pane" id="settings">
-              Settings Tab.
+        <div class="x_content">
+          <div class="col-xs-3">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs tabs-left">
+              <li class="active"><a href="#general" data-toggle="tab">General</a>
+              </li>
+              <li><a href="#oursystem" data-toggle="tab">Our System</a>
+              </li>
+              <li><a href="#messages" data-toggle="tab">Messages</a>
+              </li>
+              <li><a href="#aboutus" data-toggle="tab">About us</a>
+              </li>
+            </ul>
+          </div>
+          <div class="col-xs-9">
+            <!-- Tab panes -->
+            <div class="tab-content">
+              <div class="tab-pane active" id="general">
+                <p class="lead">Air Pollution and Health</p>
+                <p>Air pollution occurs when harmful substances including particulates and biological molecules are
+                  introduced into Earth's atmosphere. It may cause diseases, allergies or death of humans;
+                  it may also cause harm to other living organisms such as animals and food crops, and may damage
+                  the natural or built environment. Human activity and natural processes can both generate air pollution.
+                </p>
+                <p>
+                  Substances emitted into the atmosphere by human activity include:
+                </p>
+                <ul>
+                  <li>Carbon dioxide (CO2) - Because of its role as a greenhouse gas it has been described as "the leading pollutant" and "the worst climate pollution". Carbon dioxide is a natural component of the atmosphere, essential for plant life and given off by the human respiratory system. This question of terminology has practical effects, for example as determining whether the U.S. Clean Air Act is deemed to regulate CO2 emissions. CO2 currently forms about 405 parts per million (ppm) of earth's atmosphere, compared to about 280 ppm in pre-industrial times, and billions of metric tons of CO2 are emitted annually by burning of fossil fuels.CO2 increase in earth's atmosphere has been accelerating.</li>
+                  <li>Sulfur oxides (SOx) - particularly sulfur dioxide, a chemical compound with the formula SO2. SO2 is produced by volcanoes and in various industrial processes. Coal and petroleum often contain sulfur compounds, and their combustion generates sulfur dioxide. Further oxidation of SO2, usually in the presence of a catalyst such as NO2, forms H2SO4, and thus acid rain. This is one of the causes for concern over the environmental impact of the use of these fuels as power sources.</li>
+                  <li>Nitrogen oxides (NOx) - Nitrogen oxides, particularly nitrogen dioxide, are expelled from high temperature combustion, and are also produced during thunderstorms by electric discharge. They can be seen as a brown haze dome above or a plume downwind of cities. Nitrogen dioxide is a chemical compound with the formula NO2. It is one of several nitrogen oxides. One of the most prominent air pollutants, this reddish-brown toxic gas has a characteristic sharp, biting odor.</li>
+                  <li>Carbon monoxide (CO) - CO is a colorless, odorless, toxic yet non-irritating gas. It is a product of incomplete combustion of fuel such as natural gas, coal or wood. Vehicular exhaust is a major source of carbon monoxide.</li>
+                </ul>
+                <p>Secondary pollutants include:</p>
+                <ul>
+                  <li>Particulates created from gaseous primary pollutants and compounds in photochemical smog. Smog is a kind of air pollution. Classic smog results from large amounts of coal burning in an area caused by a mixture of smoke and sulfur dioxide. Modern smog does not usually come from coal but from vehicular and industrial emissions that are acted on in the atmosphere by ultraviolet light from the sun to form secondary pollutants that also combine with the primary emissions to form photochemical smog.</li>
+                  <li>Ground level ozone (O3) formed from NOx and VOCs. Ozone (O3) is a key constituent of the troposphere. It is also an important constituent of certain regions of the stratosphere commonly known as the Ozone layer. Photochemical and chemical reactions involving it drive many of the chemical processes that occur in the atmosphere by day and by night. At abnormally high concentrations brought about by human activities (largely the combustion of fossil fuel), it is a pollutant, and a constituent of smog.</li>
+                  <li>Peroxyacetyl nitrate (C2H3NO5) - similarly formed from NOx and VOCs.</li>
+                </ul>
+                <p>
+                  Health effects:
+                  Air pollution is a significant risk factor for a number of pollution-related diseases and health conditions including respiratory infections, heart disease, COPD, stroke and lung cancer. The health effects caused by air pollution may include difficulty in breathing, wheezing, coughing, asthma and worsening of existing respiratory and cardiac conditions. These effects can result in increased medication use, increased doctor or emergency room visits, more hospital admissions and premature death.
+                </p>
+              </div>
+              <div class="tab-pane" id="oursystem">
+                <p class="lead">What we do</p>
+                <p>Interpreting the AQI</p>
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead style="font-weight: bold">
+                    <tr>
+                      <td>Air Quality Index Levels of Health Concern</td>
+                      <td>Color</td>
+                      <td>Meaning</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>0 - No Data</td>
+                      <td style="background-color: #fcfcfc;"></td>
+                      <td>There is no data in this area.</td>
+                    </tr>
+                    <tr>
+                      <td>1 - Good</td>
+                      <td style="background-color: #009966;"></td>
+                      <td>Air quality is considered satisfactory, and air pollution poses little or no risk.</td>
+                    </tr>
+                    <tr>
+                      <td>2 - Moderate</td>
+                      <td style="background-color: #ffde33;"></td>
+                      <td>Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.</td>
+                    </tr>
+                    <tr>
+                      <td>3 - Unhealthy for Sensive Groups/td>
+                      <td style="background-color: #ff9933;"></td>
+                      <td>Members of sensitive groups may experience health effects. The general public is not likely to be affected.</td>
+                    </tr>
+                    <tr>
+                      <td>4 - Unhealthy</td>
+                      <td style="background-color: #cc0033;"></td>
+                      <td>Everyone may begin to experience health effects; members of sensitive groups may experience more serious health effects.</td>
+                    </tr>
+                    <tr>
+                      <td>5 - Very Unhealthy</td>
+                      <td style="background-color: #660099;"></td>
+                      <td>Health alert: everyone may experience more serious health effects.</td>
+                    </tr>
+                    <tr>
+                      <td>6 - Hazadous</td>
+                      <td style="background-color: #7e0023;"></td>
+                      <td>Health warnings of emergency conditions. The entire population is more likely to be affected.</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="tab-pane" id="messages">
+                Tab.
+              </div>
+              <div class="tab-pane" id="aboutus">
+                <p class="lead">Who we are</p>
+                <p>We are students at UIT and majoring computer networks and communications. There are two members in our group.</p>
+                <p>Our system is a product for graduation thesis</p>
+                <p>Contact us:</p>
+                <ul class="list-inline">
+                  <li><a href="https://fb.com/huuthinh.le.3/" target="_blank" ><i class="fa fa-facebook-square"></i></a>
+                  </li>
+                  <li><a href="https://github.com/ninefeb1995/" target="_blank"><i class="fa fa-github-square"></i></a>
+                  </li>
+                  <li><a href="mailto:ninefeb1995@gmail.com?subject=[AirQuality][Question]&cc=13520833@gmail.com" target="_blank"><i class="fa fa-envelope-square"></i></a>
+                  </li>
+                </ul>
+                <ul>
+
+                </ul>
+              </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
-        <div class="clearfix"></div>
       </div>
     </div>
   </div>
-</div>
 {% endblock content %}
 
 {% block extra_script %}

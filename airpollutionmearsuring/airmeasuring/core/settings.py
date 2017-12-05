@@ -26,11 +26,21 @@ SECRET_KEY = '#+b#8v8^o&57#wj&2oh45q6jr4guw78vp&yr=1syttozo(s$un'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+MY_APPS = [
+    # my apps
+    'manage_devices',
+    'dashboard',
+    'custom_auth',
+    'api',
+    'manage_users',
+    'report',
+    'introduction',
+    'core'
+]
 
 # Application definition
-
 
 INSTALLED_APPS = [
     # 'django.contrib.admin',
@@ -42,15 +52,10 @@ INSTALLED_APPS = [
     # third-parties-apps
     'widget_tweaks',
     'rest_framework',
-    # my apps
-    'manage_devices',
-    'dashboard',
-    'custom_auth',
-    'api',
-    'manage_users',
-    'report',
-    'introduction',
 ]
+
+INSTALLED_APPS.extend(MY_APPS)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -86,10 +91,20 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'airquality',
+        'USER': 'root',
+        'PASSWORD': 'thinh',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -131,13 +146,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "static-in-cdn")
+STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static', 'static-in-cdn')
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "static", "media-in-cdn")
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static', 'media-in-cdn')
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static-in-project"),
+    os.path.join(BASE_DIR, 'static-in-project'),
 )
 
 LOGIN_REDIRECT_URL = '/'
@@ -164,3 +179,51 @@ REST_FRAMEWORK = {
 #     'location': 'localhost:6379',
 #     'db': 0,
 # }
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt': "%A, %d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join(os.path.dirname(BASE_DIR), 'logging.log'),
+            'formatter': 'standard',
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'django.db.backends': {
+            'handlers': ['file', 'console'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
+}
+
+MY_LOGGERS = {}
+for app in MY_APPS:
+    MY_LOGGERS[app] = {
+        'handlers': ['file', 'console'],
+        'level': 'DEBUG',
+        'propagate': True,
+    }
+LOGGING['loggers'].update(MY_LOGGERS)

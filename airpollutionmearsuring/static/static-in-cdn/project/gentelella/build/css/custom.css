@@ -4239,3 +4239,27 @@ table thead .checkbox.radio { margin-top:-7px;margin-top:-21px; }
 .dataTables_wrapper > .row{
   overflow:auto !important; /*prevent datatables overflowing its container*/
 }
+
+/* Loader */
+.loader {
+  border: 3px solid #f3f3f3;
+  border-radius: 90%;
+  border-top: 3px solid #2c2c2c;
+  width: 30px;
+  height: 30px;
+  -webkit-animation: spin 0.5s linear infinite;
+  animation: spin 0.5s linear infinite;
+  float:right;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* End Loader */
