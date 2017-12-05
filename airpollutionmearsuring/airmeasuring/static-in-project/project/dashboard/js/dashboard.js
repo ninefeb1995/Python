@@ -126,10 +126,7 @@ $(document).ready(function () {
           data: datasets,
           options: chartOptions
         });
-
-
       }
-
     });
   }
 
@@ -227,35 +224,39 @@ function initMap() {
       }
       var data = JSON.parse(xmlHttp.responseText);
       $.each(data, function (index, value) {
-        var color = "";
-        var aqi = value['aqi_value'];
-        if (aqi <= 50){
-          color = '#66FF6D';
+        var aqi = value['aqi_value'],
+            delta = aqi / 500,
+            color = [],
+            low = [151, 83, 34], // color of smallest datum
+            high = [0, 92, 35];   // color of largest datum
+
+        for (var i = 0; i < 3; i++) {
+          // calculate an integer color based on the delta
+          color[i] = (high[i] - low[i]) * delta + low[i];
         }
-        else if (aqi >= 51 && aqi <= 100) {
-          color = '#C2C700';
-        }
-        else if (aqi >= 101 && aqi <= 150) {
-          color = '#C88500';
-        }
-        else if (aqi >= 151 && aqi <= 200) {
-          color = '#F80007';
-        }
-        else if (aqi >= 201 && aqi <= 300) {
-          color = '#af2378';
-        }
-        else {
-          color = '#A00002';
-        }
+
         var cityCircle = new google.maps.Circle({
-          strokeColor: color,
+          strokeColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
           strokeOpacity: 0.8,
           strokeWeight: 0.001,
-          fillColor: color,
-          fillOpacity: 0.35,
+          fillColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
+          fillOpacity: 0.75,
           map: map,
           center: value['center'],
           radius: 1.6 * 100
+        }),
+        center = new google.maps.Marker({
+          position: value['center'],
+          map: map
+        });
+
+        google.maps.event.addListener(cityCircle, 'mouseover', function (e) {
+          var percent = aqi / 500 * 100;
+          document.getElementById('data-label').textContent = 'AQI';
+          document.getElementById('data-value').textContent = aqi.toLocaleString();
+          document.getElementById('data-box').style.display = 'block';
+          document.getElementById('data-caret').style.display = 'block';
+          document.getElementById('data-caret').style.paddingLeft = percent + '%';
         });
       });
   }

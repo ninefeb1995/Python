@@ -16,9 +16,9 @@ $(document).ready(function () {
         }
       }},
       { title: 'Last Activity', data: 'last_login', render: function (data) {
-        var date = new Date(data),
-            month = date.getMonth() + 1;
-        return date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear();
+        var date = new Date(data);
+        var month = date.getMonth() + 1;
+        return date.getDate() + "/" + (month.length > 1 ? month : "0" + month) + "/" + date.getFullYear();
       }},
       { title: 'Action', data: '', render: function (id) {
         var html = `<a href="" class="btn btn-sm btn-flat bg-purple"><i class="fa fa-edit"></i> Edit</a>
