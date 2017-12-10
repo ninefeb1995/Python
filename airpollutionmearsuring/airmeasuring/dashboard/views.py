@@ -10,6 +10,10 @@ from api.serializers import DataSerialization, NodeSerialization
 from django.views.decorators.csrf import csrf_exempt
 from django.http.response import HttpResponse
 from django.utils import timezone
+from geopy.distance import great_circle
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class DashBoardView(LoginRequiredMixin, View):
@@ -48,18 +52,17 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
             'gateway_count': gateway_count,
             'area_count': area_count
         }
-
         return JsonResponse(dict_data, safe=False)
 
 
 class DashBoardEventStream(LoginRequiredMixin, View):
 
     def eventstream(self, name_of_node):
-        node_name = name_of_node.replace("+", " ")
+        node_name = name_of_node.replace('+', ' ')
         last_connection = Node.objects.filter(name=node_name)[0].last_connect
         now = timezone.now()
         last_activity = now - last_connection
-        if last_activity.total_seconds() > 10:
+        if last_activity.total_seconds() > 60:
             return True
         latest_object = RawData.objects.filter(node_name=node_name).latest()
         stream = '&value=' + str(latest_object.co) + '|' + str(latest_object.nitrogen)
@@ -99,14 +102,18 @@ class DashBoardRawData(View):
         node_name = request.GET.get('node' or None)
         co = request.GET.get('co' or None)
         if node_name and co:
-            get_node_name = Node.objects.get(name=node_name)
-            new_data = RawData(co=co,
+            try:
+                get_node_name = Node.objects.get(name=node_name)
+            except (Node.DoesNotExist, Node.MultipleObjectsReturned):
+                return
+            new_data = RawData(co=float(co),
                                node=get_node_name,
                                node_name=node_name,
                                measuring_date=timezone.now())
             new_data.save(force_insert=True)
             get_node_name.last_connect = timezone.now()
             get_node_name.save()
+        return
 
 
 class DashBoardViewAQIOnMap(View):
@@ -133,4 +140,70 @@ class DashBoardViewAQIOnMap(View):
                 'aqi_value': aqi.value
             }
             data_to_send[aqi.node.name] = data_of_node
+        return JsonResponse(data_to_send, safe=False)
+
+
+class DashBoardViewApp(View):
+
+    def get(self, request):
+        latitude = request.GET.get('lat' or None)
+        longitude = request.GET.get('long' or None)
+        data_to_send = {}
+        if not latitude or not longitude:
+            data_to_send['status'] = 'failed'
+            data_to_send['message'] = 'Location sent was error !'
+            return JsonResponse(data_to_send, safe=False)
+        location_app = (longitude, latitude)
+        nodes = Node.objects.filter(is_available=True)
+        min_in_distance = 0.0
+        min_in_node = None
+        total_aqi_value = 0.0
+        count_aqi_value = 0
+        if nodes.count() == 0:
+            data_to_send['status'] = 'failed'
+            data_to_send['message'] = 'There is no data in this area !'
+            return JsonResponse(data_to_send, safe=False)
+        for node in nodes:
+            location_node = (node.longitude, node.latitude)
+            distance_in_meter = great_circle(location_node, location_app).meters
+            if distance_in_meter > 1600:
+                continue
+            if distance_in_meter < min_in_distance:
+                min_in_distance = distance_in_meter
+                min_in_node = node
+            try:
+                total_aqi_value += AQI.objects.get(node=node).value
+                count_aqi_value += 1
+            except AQI.DoesNotExist:
+                logger.error('\n\n\nError when getting AQI from node at DashBoardViewApp')
+        if min_in_distance == 0.0:
+            data_to_send['status'] = 'failed'
+            data_to_send['message'] = 'There is no data in this area !'
+            return JsonResponse(data_to_send, safe=False)
+        try:
+            data_from_node = Data.objects.filter(node=min_in_node).latest(field_name='measuring_date')
+        except Data.DoesNotExist:
+            data_to_send['status'] = 'failed'
+            data_to_send['message'] = 'There is no data in this area !'
+            return JsonResponse(data_to_send, safe=False)
+        aqi_to_send = total_aqi_value / count_aqi_value
+        if aqi_to_send <= 50.0:
+            color = 1
+        elif 51.0 <= aqi_to_send <= 100.0:
+            color = 2
+        elif 101.0 <= aqi_to_send <= 150.0:
+            color = 3
+        elif 151.0 <= aqi_to_send <= 200.0:
+            color = 4
+        elif 201.0 <= aqi_to_send <= 300.0:
+            color = 5
+        else:
+            color = 6
+        data_to_send['status'] = 'success'
+        data_to_send['data'] = {
+            'CO': data_from_node.co,
+            'AQI': aqi_to_send,
+            'color': color,
+            'trend': ''
+        }
         return JsonResponse(data_to_send, safe=False)

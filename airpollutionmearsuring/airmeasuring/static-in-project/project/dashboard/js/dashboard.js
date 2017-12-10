@@ -146,7 +146,7 @@ $(document).ready(function () {
               "subCaption": "",
               "xAxisName": "Time",
               "yAxisName": "Value",
-              "numberPrefix": "%",
+              "numberSuffix": " μg/m3",
               "refreshinterval": "2",
               "numdisplaysets": "20",
               "showValues": "0",
@@ -179,7 +179,7 @@ $(document).ready(function () {
         },
         'realtimeUpdateComplete': function(event, parameter) {
           var dispBox = document.getElementById("errorView" + id.toString());
-          dispBox.style.display = "none";
+          // dispBox.style.display = "none";
         }
       }
     });
@@ -227,6 +227,7 @@ function initMap() {
         var aqi = value['aqi_value'],
             delta = aqi / 500,
             color = [],
+            status = '',
             low = [151, 83, 34], // color of smallest datum
             high = [0, 92, 35];   // color of largest datum
 
@@ -234,7 +235,24 @@ function initMap() {
           // calculate an integer color based on the delta
           color[i] = (high[i] - low[i]) * delta + low[i];
         }
-
+        if (aqi <= 50) {
+          status = 'Good';
+        }
+        else if (aqi >= 51 && aqi <= 100) {
+          status = 'Moderate';
+        }
+        else if (aqi >= 101 && aqi <= 150) {
+          status = "Unhealthy for Sensitive Groups";
+        }
+        else if (aqi >= 151 && aqi <= 200) {
+          status = "Unhealthy";
+        }
+        else if (aqi >= 201 && aqi <= 300) {
+          status = "Very Unhealthy";
+        }
+        else {
+          status = "Hazardous";
+        }
         var cityCircle = new google.maps.Circle({
           strokeColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
           strokeOpacity: 0.8,
@@ -247,13 +265,14 @@ function initMap() {
         }),
         center = new google.maps.Marker({
           position: value['center'],
-          map: map
+          map: map,
+          icon: '/static/project/google_maps/img/flags-icon.png'
         });
 
         google.maps.event.addListener(cityCircle, 'mouseover', function (e) {
           var percent = aqi / 500 * 100;
           document.getElementById('data-label').textContent = 'AQI';
-          document.getElementById('data-value').textContent = aqi.toLocaleString();
+          document.getElementById('data-value').textContent = aqi.toLocaleString() + ' (' + status + ')';
           document.getElementById('data-box').style.display = 'block';
           document.getElementById('data-caret').style.display = 'block';
           document.getElementById('data-caret').style.paddingLeft = percent + '%';

@@ -9,11 +9,11 @@ logger = logging.getLogger(__name__)
 
 
 class RawData(models.Model):
-    co = models.FloatField()
-    nitrogen = models.FloatField()
-    sulphur = models.FloatField()
-    pmten = models.FloatField()
-    ozone = models.FloatField()
+    co = models.FloatField(null=True)
+    nitrogen = models.FloatField(null=True)
+    sulphur = models.FloatField(null=True)
+    pmten = models.FloatField(null=True)
+    ozone = models.FloatField(null=True)
     measuring_date = models.DateTimeField(auto_created=True)
     node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)
     node_name = models.CharField(max_length=255)  # This field is to ensure data belonged
@@ -24,11 +24,11 @@ class RawData(models.Model):
 
 
 class Data(models.Model):
-    co = models.FloatField()
-    nitrogen = models.FloatField()
-    sulphur = models.FloatField()
-    pmten = models.FloatField()
-    ozone = models.FloatField()
+    co = models.FloatField(null=True)
+    nitrogen = models.FloatField(null=True)
+    sulphur = models.FloatField(null=True)
+    pmten = models.FloatField(null=True)
+    ozone = models.FloatField(null=True)
     measuring_date = models.DateField(default=timezone.now())
     area = models.ForeignKey('Area', on_delete=models.CASCADE)
     node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)

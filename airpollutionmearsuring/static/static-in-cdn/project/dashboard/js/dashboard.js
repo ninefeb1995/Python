@@ -127,7 +127,6 @@ $(document).ready(function () {
           options: chartOptions
         });
       }
-
     });
   }
 
@@ -187,7 +186,80 @@ $(document).ready(function () {
     fusioncharts.render();
     });
   }
-
 });
 
 
+document.getElementById('census-min').textContent = '0';
+document.getElementById('census-max').textContent = '500';
+var mapStyle = [{
+  'stylers': [{'visibility': 'on'}]
+}, {
+  'featureType': 'landscape',
+  'elementType': 'geometry',
+  'stylers': [{'visibility': 'on'}, {'color': '#fcfcfc'}]
+}, {
+  'featureType': 'water',
+  'elementType': 'geometry',
+  'stylers': [{'visibility': 'on'}, {'color': '#bfd4ff'}]
+}];
+function initMap() {
+  // Create the map.
+  var map = new google.maps.Map(document.getElementById('visualization-on-map'), {
+    zoom: 15,
+    center: {lat: 10.867949500000002, lng: 106.8074915},
+    styles: mapStyle
+  });
+
+  $.ajax({
+    url: '/dashboard/aqionmap/',
+    data: {
+    },
+    contentType: "application/json; charset=utf-8",
+    type: 'get',
+    dataType: 'json',
+    traditional: true,
+    complete: function (xmlHttp, textStatus) {
+      if (textStatus === 'error') {
+        return;
+      }
+      var data = JSON.parse(xmlHttp.responseText);
+      $.each(data, function (index, value) {
+        var aqi = value['aqi_value'],
+            delta = aqi / 500,
+            color = [],
+            low = [151, 83, 34], // color of smallest datum
+            high = [0, 92, 35];   // color of largest datum
+
+        for (var i = 0; i < 3; i++) {
+          // calculate an integer color based on the delta
+          color[i] = (high[i] - low[i]) * delta + low[i];
+        }
+
+        var cityCircle = new google.maps.Circle({
+          strokeColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
+          strokeOpacity: 0.8,
+          strokeWeight: 0.001,
+          fillColor: 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)',
+          fillOpacity: 0.75,
+          map: map,
+          center: value['center'],
+          radius: 1.6 * 100
+        }),
+        center = new google.maps.Marker({
+          position: value['center'],
+          map: map,
+          icon: 'project/google_maps/img/flags-icon.png'
+        });
+
+        google.maps.event.addListener(cityCircle, 'mouseover', function (e) {
+          var percent = aqi / 500 * 100;
+          document.getElementById('data-label').textContent = 'AQI';
+          document.getElementById('data-value').textContent = aqi.toLocaleString();
+          document.getElementById('data-box').style.display = 'block';
+          document.getElementById('data-caret').style.display = 'block';
+          document.getElementById('data-caret').style.paddingLeft = percent + '%';
+        });
+      });
+  }
+  });
+}

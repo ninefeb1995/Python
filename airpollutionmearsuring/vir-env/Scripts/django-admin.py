@@ -1,4 +1,4 @@
-#!D:\Practices\Python\airpollutionmearsuring\vir-env\Scripts\python.exe
+#!d:\practices\python\airpollutionmearsuring\vir-env\scripts\python.exe
 from django.core import management
 
 if __name__ == "__main__":

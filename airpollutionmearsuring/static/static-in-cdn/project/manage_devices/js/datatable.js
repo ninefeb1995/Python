@@ -2,7 +2,7 @@ $(document).ready(function () {
 
   var table = $('#datatable').DataTable({
     ajax:{
-      url: "/api/nodes/"
+      url: '/api/nodes/'
     },
     columns: [
       { title: 'ID', data: 'node_identification'},
@@ -28,7 +28,72 @@ $(document).ready(function () {
           }
         return button_list;
       }}
-    ]
+    ],
+    initComplete: function(settings, json) {
+      <!-- Loading nodes to google map when table loaded-->
+      google.charts.load('current', {
+        'packages': ['map'],
+        'mapsApiKey': 'AIzaSyBqZkodGaG-lTwl1y2EiT4dFfk99FMSytQ'
+      });
+      google.charts.setOnLoadCallback(drawMap);
+      function drawMap () {
+        var nodes = [];
+        nodes.push(['Lat', 'Long', 'Name', 'Marker']);
+        table.rows().every(function (rowIdx, tableLoop, rowLoop) {
+          var node = this.data(), // ... do something with data(), or this.node(), etc
+              node_to_push = [parseFloat(`${node.latitude}`), parseFloat(`${node.longitude}`), `${node.name}`];
+          if(node.role === 'node_gateway'){
+            node_to_push.push('gateway');
+          }
+          else{
+            node_to_push.push('node');
+          }
+          nodes.push(
+            node_to_push
+          );
+        });
+        var data = google.visualization.arrayToDataTable(nodes);
+        var options = {
+          mapType: 'styledMap',
+          zoomLevel: 12,
+          showTooltip: true,
+          showInfoWindow: true,
+          useMapTypeControl: true,
+          enableScrollWheel: true,
+          icons: {
+            gateway: {
+              normal: '/static/project/google_maps/img/gateway.png',
+              selected: '/static/project/google_maps/img/gateway.png'
+            },
+            node: {
+              normal: '/static/project/google_maps/img/node.png',
+              selected: '/static/project/google_maps/img/node.png'
+            }
+          },
+          maps: {
+            // Your custom mapTypeId holding custom map styles.
+            styledMap: {
+              name: 'Devices', // This name will be displayed in the map type control.
+              styles: [
+                {featureType: 'poi.attraction',
+                 stylers: [{color: '#fce8b2'}]
+                },
+                {featureType: 'road.highway',
+                 stylers: [{hue: '#0277bd'}, {saturation: -50}]
+                },
+                {featureType: 'road.highway',
+                 elementType: 'labels.icon',
+                 stylers: [{hue: '#000'}, {saturation: 100}, {lightness: 50}]
+                },
+                {featureType: 'landscape',
+                 stylers: [{hue: '#259b24'}, {saturation: 10}, {lightness: -22}]
+                }
+          ]}}
+        };
+        var map = new google.visualization.Map(document.getElementById('device-on-map'));
+        map.draw(data, options);
+      }
+    }
   });
 
   $('#datatable tbody').on('click', '.btn-danger', function(e){
@@ -120,71 +185,5 @@ $(document).ready(function () {
   //   }));
   // });
 
-  <!-- Loading nodes to google map -->
-    google.charts.load('current', {
-      'packages': ['map'],
-      'mapsApiKey': 'AIzaSyBqZkodGaG-lTwl1y2EiT4dFfk99FMSytQ'
-    });
-    google.charts.setOnLoadCallback(drawMap);
-    function drawMap () {
 
-      var nodes = [];
-      nodes.push(['Lat', 'Long', 'Name', 'Marker']);
-      table.rows().every(function (rowIdx, tableLoop, rowLoop) {
-        var node = this.data(); // ... do something with data(), or this.node(), etc
-        var node_to_push = [parseFloat(`${node.latitude}`), parseFloat(`${node.longitude}`), `${node.name}`];
-        if(node.role === "node_gateway"){
-          node_to_push.push("gateway");
-        }
-        else{
-          node_to_push.push("node");
-        }
-        nodes.push(
-          node_to_push
-        );
-      });
-      var data = google.visualization.arrayToDataTable(nodes);
-
-      var options = {
-        mapType: 'styledMap',
-        zoomLevel: 12,
-        showTooltip: true,
-        showInfoWindow: true,
-        useMapTypeControl: true,
-        enableScrollWheel: true,
-        icons: {
-          gateway: {
-            normal: '/static/project/google_maps/img/gateway.png',
-            selected: '/static/project/google_maps/img/gateway.png'
-          },
-          node: {
-            normal: '/static/project/google_maps/img/node.png',
-            selected: '/static/project/google_maps/img/node.png'
-          }
-        },
-        maps: {
-          // Your custom mapTypeId holding custom map styles.
-          styledMap: {
-            name: 'Devices', // This name will be displayed in the map type control.
-            styles: [
-              {featureType: 'poi.attraction',
-               stylers: [{color: '#fce8b2'}]
-              },
-              {featureType: 'road.highway',
-               stylers: [{hue: '#0277bd'}, {saturation: -50}]
-              },
-              {featureType: 'road.highway',
-               elementType: 'labels.icon',
-               stylers: [{hue: '#000'}, {saturation: 100}, {lightness: 50}]
-              },
-              {featureType: 'landscape',
-               stylers: [{hue: '#259b24'}, {saturation: 10}, {lightness: -22}]
-              }
-        ]}}
-      };
-
-      var map = new google.visualization.Map(document.getElementById('device-on-map'));
-
-      map.draw(data, options);
-    }
 });
