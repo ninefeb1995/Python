@@ -1,0 +1,56 @@
+.nicebox {
+    position: absolute;
+    text-align: center;
+    font-family: "Roboto", "Arial", sans-serif;
+    font-size: 13px;
+    z-index: 5;
+    box-shadow: 0 4px 6px -4px #333;
+    padding: 5px 10px;
+    background: rgb(255,255,255);
+    background: linear-gradient(to bottom,rgba(255,255,255,1) 0%,rgba(245,245,245,1) 100%);
+    border: rgb(229, 229, 229) 1px solid;
+}
+#controls {
+top: 10px;
+left: 200px;
+width: 360px;
+height: 45px;
+}
+#data-box {
+top: 10px;
+left: 590px;
+height: 45px;
+line-height: 45px;
+display: none;
+}
+#census-variable {
+width: 360px;
+height: 0px;
+}
+#legend { display: flex; display: -webkit-box; padding-top: 7px }
+.color-key {
+background: linear-gradient(to left,
+hsl(0, 92%, 35%) 0%,
+hsl(0, 94%, 44%) 0%,
+hsl(20, 71%, 52%) 17%,
+hsl(40, 61%, 54%) 33%,
+hsl(72, 60%, 48%) 50%,
+hsl(102, 78%, 41%) 67%,
+hsl(127, 81%, 37%) 83%,
+hsl(151, 83%, 34%) 100%);
+flex: 1;
+-webkit-box-flex: 1;
+margin: 0 5px;
+text-align: left;
+font-size: 1.0em;
+line-height: 1.0em;
+}
+#data-value { font-size: 2.0em; font-weight: bold }
+#data-label { font-size: 2.0em; font-weight: normal; padding-right: 10px; }
+#data-label:after { content: ':' }
+#data-caret {
+    margin-left: -5px;
+    display: none;
+    font-size: 14px;
+    width: 14px
+}
