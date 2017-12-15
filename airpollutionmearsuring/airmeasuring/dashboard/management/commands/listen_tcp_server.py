@@ -41,7 +41,7 @@ class ThreadedServer(object):
                     node_id = Node.objects.get(node_identification=node)
                     new_data = RawData(co=co,
                                        node=node_id,
-                                       node_name=node_id.name,
+                                       node_identification=node_id.node_identification,
                                        measuring_date=datetime.now())
                     new_data.save(force_insert=True)
                 else:

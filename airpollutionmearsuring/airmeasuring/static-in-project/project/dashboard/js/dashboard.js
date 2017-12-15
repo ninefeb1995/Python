@@ -66,7 +66,7 @@ $(document).ready(function () {
           var name = active_node[i].name.replace(" ", "").toLowerCase(),
               id = "chart-container-" + name;
           $('.real_time').append(`<div id="${id}" style="width: 50%; float: left;"></div>`);
-          render_realtime_chart(name, active_node[i].name, id, '100%', 0, null, null, null, active_node[i].name.replace(" ", "+"));
+          render_realtime_chart(name, active_node[i].name, id, '100%', 0, null, null, null, active_node[i].node_identification);
         }
 
         var co_data = [],
@@ -179,7 +179,7 @@ $(document).ready(function () {
         },
         'realtimeUpdateComplete': function(event, parameter) {
           var dispBox = document.getElementById("errorView" + id.toString());
-          // dispBox.style.display = "none";
+          dispBox.style.display = "none";
         }
       }
     });

@@ -5,6 +5,4 @@ from django.conf.urls.static import settings
 urlpatterns = [
     url(r'login/$', django_auth.login, {'template_name': 'custom_auth/login.html'}, name="login"),
     url(r'logout/$', django_auth.logout, {'next_page': settings.LOGIN_URL}, name="logout"),
-
-
 ]

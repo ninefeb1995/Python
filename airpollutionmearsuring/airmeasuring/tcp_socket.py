@@ -1,10 +1,10 @@
 import socket
 import threading
-# from dashboard.models import RawData
-# from manage_devices.models import Node
-# from datetime import datetime
-# import os
-# import django
+from dashboard.models import RawData
+from manage_devices.models import Node
+from datetime import datetime
+import os
+import django
 
 
 class ThreadedServer(object):
@@ -29,25 +29,27 @@ class ThreadedServer(object):
             try:
                 data = client.recv(size)
                 if data:
-                    # # Set the response to echo back the recieved data
-                    # print(data)
-                    # response = data
-                    # client.send(response)
-                    # # handle data here
-                    # co, oxi, node = data.split(';')
-                    # node_id = Node.objects.get(node)
-                    # new_data = RawData(oxi=oxi,
-                    #                    co=co,
-                    #                    node=node_id,
-                    #                    node_name=node_id.name,
-                    #                    measuring_date=datetime.now())
-                    # new_data.save(force_insert=True)
+                    # Set the response to echo back the recieved data
+                    response = data
+                    client.send(response)
+                    # handle data here
+                    co, oxi, node = data.split(';')
+                    node_id = Node.objects.get(node)
+                    new_data = RawData(oxi=oxi,
+                                       co=co,
+                                       node=node_id,
+                                       node_identification=node_id.name,
+                                       measuring_date=datetime.now())
+                    new_data.save(force_insert=True)
                     print('Adding successfully !')
                 else:
                     print('Client disconnected')
             except:
                 client.close()
                 return False
+
+
 ThreadedServer('localhost', 1995).listen()
+
 
 

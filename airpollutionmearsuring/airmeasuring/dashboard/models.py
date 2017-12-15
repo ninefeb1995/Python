@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from manage_devices.models import Node
+from datetime import timedelta, datetime
 import schedule
 import time
 import logging
@@ -16,7 +17,7 @@ class RawData(models.Model):
     ozone = models.FloatField(null=True)
     measuring_date = models.DateTimeField(auto_created=True)
     node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)
-    node_name = models.CharField(max_length=255)  # This field is to ensure data belonged
+    node_identification = models.CharField(max_length=255)  # This field is to ensure data belonged
     # to what when node has been deleted
 
     class Meta:
@@ -57,15 +58,18 @@ def job_schedule():
         time.sleep(1)
 
 
-def calculate_data_from_rawdata():
-    day = timezone.now().date()
-    all_data = RawData.objects.filter(measuring_date=day)
+def calculate_data_from_rawdata(*args, **kwargs):
+    if 'date' in kwargs:
+        date = kwargs['date']
+    else:
+        date = datetime.combine(timezone.now().date(), datetime.min.time())
+    all_data = RawData.objects.filter(measuring_date__range=[date, date + timedelta(hours=23, minutes=59, seconds=59)])
     all_node = Node.objects.all()
-    logger.info('\n\nCalculate data on %s\n', day.strftime('%A, %d. %B %Y %I:%M%p'))
+    logger.info('\n\nCalculate data on %s\n', date.strftime('%A, %d. %B %Y %I:%M%p'))
     for node in all_node:
         all_data_by_node = all_data.filter(node=node)
         if all_data_by_node.count() <= 0:
-            logger.info('\nNot add data of ', node.name)
+            logger.info('\nNot add data of %s', node.name)
             continue
         avg_co = 0.0
         avg_nitrogen = 0.0
@@ -98,7 +102,7 @@ def calculate_data_from_rawdata():
             if data.ozone:
                 avg_ozone += data.ozone
                 count_ozone += 1
-        new_data = Data(measuring_date=day, node=node, area=node.area)
+        new_data = Data(measuring_date=date, node=node, area=node.area)
         if count_co != 0:
             avg_co /= count_co
             new_data.co = avg_co
@@ -120,7 +124,7 @@ def calculate_data_from_rawdata():
             new_data.ozone = avg_ozone
             aqi_ozone = avg_ozone / 0.06 * 100
         new_data.save(force_insert=True)
-        aqi_by_day_by_node = max([aqi_co, aqi_nitrogen, aqi_sulphur, aqi_pmten, aqi_ozone])
-        aqi_of_node = AQI(node=node, of_date=day, value=aqi_by_day_by_node)
+        aqi_by_date_by_node = max([aqi_co, aqi_nitrogen, aqi_sulphur, aqi_pmten, aqi_ozone])
+        aqi_of_node = AQI(node=node, of_date=date, value=aqi_by_date_by_node)
         aqi_of_node.save(force_insert=True)
-        logger.info('\nAdd data of ', node.name)
+        logger.info('\nAdd data of %s', node.name)

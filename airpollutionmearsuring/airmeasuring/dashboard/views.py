@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class DashBoardView(LoginRequiredMixin, View):
+
     def get(self, request):
         areas = Area.objects.all()
         return render(request, template_name='dashboard/index.html', context={
@@ -25,6 +26,7 @@ class DashBoardView(LoginRequiredMixin, View):
 
 
 class DashBoardShowOnView(LoginRequiredMixin, View):
+
     def get(self, request):
         area = request.GET.get('area')
         date_start = datetime.strptime(request.GET.get('date_start'), '%a %b %d %Y %H:%M:%S %Z%z')
@@ -58,13 +60,13 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
 class DashBoardEventStream(LoginRequiredMixin, View):
 
     def eventstream(self, name_of_node):
-        node_name = name_of_node.replace('+', ' ')
-        last_connection = Node.objects.filter(name=node_name)[0].last_connect
-        now = timezone.now()
-        last_activity = now - last_connection
-        if last_activity.total_seconds() > 60:
-            return True
-        latest_object = RawData.objects.filter(node_name=node_name).latest()
+        # node_name = name_of_node.replace('+', ' ')
+        # last_connection = Node.objects.filter(node_identification=name_of_node)[0].last_connect
+        # now = timezone.now()
+        # last_activity = now - last_connection
+        # if last_activity.total_seconds() > 60:
+        #     return True
+        latest_object = RawData.objects.filter(node_identification=name_of_node).latest()
         stream = '&value=' + str(latest_object.co) + '|' + str(latest_object.nitrogen)
         yield stream
         # if latest_object:
@@ -80,9 +82,9 @@ class DashBoardEventStream(LoginRequiredMixin, View):
 
     @csrf_exempt
     def get(self, request, name_of_node):
-        if self.eventstream(name_of_node):
-            return
-        response = HttpResponse(self.eventstream(name_of_node), content_type="text/event-stream")
+        # if self.eventstream(name_of_node):
+        #     return
+        response = HttpResponse(self.eventstream(name_of_node), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'
         return response
 
@@ -99,21 +101,23 @@ class DashBoardEventStream(LoginRequiredMixin, View):
 class DashBoardRawData(View):
 
     def get(self, request):
-        node_name = request.GET.get('node' or None)
+        node_identification = request.GET.get('node' or None)
         co = request.GET.get('co' or None)
-        if node_name and co:
+        if node_identification and co:
             try:
-                get_node_name = Node.objects.get(name=node_name)
+                get_node_identification = Node.objects.get(node_identification=node_identification)
             except (Node.DoesNotExist, Node.MultipleObjectsReturned):
-                return
+                response = HttpResponse('Error')
+                return response
             new_data = RawData(co=float(co),
-                               node=get_node_name,
-                               node_name=node_name,
+                               node=get_node_identification,
+                               node_identification=node_identification,
                                measuring_date=timezone.now())
             new_data.save(force_insert=True)
-            get_node_name.last_connect = timezone.now()
-            get_node_name.save()
-        return
+            get_node_identification.last_connect = timezone.now()
+            get_node_identification.save()
+        response = HttpResponse('Success')
+        return response
 
 
 class DashBoardViewAQIOnMap(View):
@@ -163,16 +167,16 @@ class DashBoardViewApp(View):
             data_to_send['status'] = 'failed'
             data_to_send['message'] = 'There is no data in this area !'
             return JsonResponse(data_to_send, safe=False)
-        for node in nodes:
+        for index, node in enumerate(nodes):
             location_node = (node.longitude, node.latitude)
             distance_in_meter = great_circle(location_node, location_app).meters
             if distance_in_meter > 1600:
                 continue
-            if distance_in_meter < min_in_distance:
+            if index == 0 or distance_in_meter < min_in_distance:
                 min_in_distance = distance_in_meter
                 min_in_node = node
             try:
-                total_aqi_value += AQI.objects.get(node=node).value
+                total_aqi_value += AQI.objects.filter(node=node).latest(field_name='of_date').value
                 count_aqi_value += 1
             except AQI.DoesNotExist:
                 logger.error('\n\n\nError when getting AQI from node at DashBoardViewApp')
@@ -206,4 +210,14 @@ class DashBoardViewApp(View):
             'color': color,
             'trend': ''
         }
+        logger.info('\n\n\nApp with ip:%s getting data', get_client_ip(request))
         return JsonResponse(data_to_send, safe=False)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
