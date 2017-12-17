@@ -317,7 +317,12 @@ $(document).ready(function () {
         if (xmlHttp.responseText === 'successful') {
           $('#myform').submit();
         }
+        else if (xmlHttp.responseText === 'failed') {
+          $('.invalid-error').text('* Invalid authentication. Try again !');
+          $('.invalid-error').css('display', 'block');
+        }
         else {
+          $('.invalid-error').text('** Internal server error, contact admin to fix it !');
           $('.invalid-error').css('display', 'block');
         }
       }
@@ -327,43 +332,94 @@ $(document).ready(function () {
   $('#forgetpass-btn').on('click', function () {
     var email = $('#id_email').val(),
         filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
-        value = $('form#myform-forgetpass :input')[0];
-    if (email === '') {
+        value = $('form#myform-forgetpass :input')[0],
+        recovery_code = $('#id_resetcode').val();
+    if (email === '' && recovery_code === '') {
       $('.error1').fadeOut('fast', function() {
         $(this).css('top', '214px');
       });
       $('.error1').fadeIn('fast', function(){
         $('#id_email').focus();
+        $('#id_resetcode').focus();
       });
       return;
     }
-    if (!filter.test(email)) {
+    if (email !== '' && !filter.test(email)) {
         $('.invalid-error2').text("* Email does not match format");
         $('.invalid-error2').css('display', 'block');
         return;
     }
-    $.ajax({
-      url: '/authen/manual/check/email/',
-      data: {
-        'csrfmiddlewaretoken': $(value).val(),
-        'email': email
-      },
-      type: 'post',
-      traditional: true,
-      complete: function (xmlHttp, textStatus) {
-        if (xmlHttp.responseText === 'successful') {
-          window.location.href = '#signin';
-          window.location.href = '#signup';
-          $('#id_resetcode').removeAttr('type');
-          $('#id_email').attr('type', 'hidden');
-          $('#id_email').val('');
+    else if (email !== '') {
+      $.ajax({
+        url: '/authen/manual/check/email/',
+        data: {
+          'csrfmiddlewaretoken': $(value).val(),
+          'email': email
+        },
+        type: 'post',
+        traditional: true,
+        complete: function (xmlHttp, textStatus) {
+          if (xmlHttp.responseText === 'successful') {
+            window.location.href = '#signin';
+            window.location.href = '#signup';
+            $('#id_resetcode').removeAttr('type');
+            $('#id_email').attr('type', 'hidden');
+            $('#id_email').val('');
+            $('.invalid-error2').css('display', 'none');
+          }
+          else if (xmlHttp.responseText === 'failed') {
+            $('.invalid-error2').text('* Email does not match any records !');
+            $('.invalid-error2').css('display', 'block');
+          }
+          else {
+            $('.invalid-error2').text('** Internal server error, contact admin to fix it !');
+            $('.invalid-error2').css('display', 'block');
+          }
         }
-        else {
-          $('.invalid-error2').text("* Email does not match any records");
-          $('.invalid-error2').css('display', 'block');
+      });
+    }
+    else if (recovery_code !== '') {
+      $.ajax({
+        url: '/authen/manual/check/code/',
+        data: {
+          'csrfmiddlewaretoken': $(value).val(),
+          'code': recovery_code
+        },
+        type: 'post',
+        traditional: true,
+        complete: function (xmlHttp, textStatus) {
+          if (xmlHttp.responseText === 'successful') {
+            window.open(window.location.href.split('#')[0], '_self');
+          }
+          else if (xmlHttp.responseText === 'failed') {
+            $('.invalid-error2').text('* Invalid reset code. Try again !');
+            $('.invalid-error2').css('display', 'block');
+          }
+          else if (xmlHttp.responseText === 'expired') {
+            var count = 3,
+                countdown = setInterval(function () {
+                  $('.invalid-error2').text('* Session is expire. Redirect ' + count.toString() + ' !');
+                  $('.invalid-error2').css('display', 'block');
+                  if (count == 0) {
+                    clearInterval(countdown);
+                    window.location.href = '#signin';
+                    window.location.href = '#signup';
+                    $('#id_email').removeAttr('type');
+                    $('#id_resetcode').attr('type', 'hidden');
+                    $('#id_email').val('');
+                    $('#id_resetcode').val('');
+                    $('.invalid-error2').css('display', 'none');
+                  }
+                  count--;
+                }, 1000);
+          }
+          else {
+            $('.invalid-error2').text('** Internal server error, contact admin to fix it !');
+            $('.invalid-error2').css('display', 'block');
+          }
         }
-      }
-    });
+      });
+    }
   });
 
   $('#return_login').on('click', function () {
@@ -377,14 +433,14 @@ $(document).ready(function () {
     $('.invalid-error').css('display', 'none');
   });
 
-  $('#id_username, #id_password, #id_email').keyup(function(){
+  $('#id_username, #id_password, #id_email, #id_resetcode').keyup(function(){
       $('.error').fadeOut('fast');
       $('.error1').fadeOut('fast');
       $('.invalid-error').css('display', 'none');
       $('.invalid-error2').css('display', 'none');
   });
 
-  $('#id_username, #id_password, #id_email').mouseup(function () {
+  $('#id_username, #id_password, #id_email, #id_resetcode').mouseup(function () {
     $('.error').fadeOut('fast');
     $('.error1').fadeOut('fast');
     $('.invalid-error').css('display', 'none');

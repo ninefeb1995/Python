@@ -22,6 +22,7 @@ class ThreadedServer(object):
         print("Server is listening on (%s, %s) !" % (self.host, self.port))
         logger.info("Server is listening on (%s, %s) !" % (self.host, self.port))
         self.sock.listen(10)
+        self.sock.settimeout(180)
         while True:
             client, address = self.sock.accept()
             client.settimeout(10)
