@@ -116,7 +116,9 @@ class DashBoardRawData(View):
             new_data.save(force_insert=True)
             get_node_identification.last_connect = timezone.now()
             get_node_identification.save()
-        response = HttpResponse('Success')
+            response = HttpResponse('Success')
+        else:
+            response = HttpResponse('Error')
         return response
 
 

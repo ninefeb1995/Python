@@ -88,7 +88,6 @@ $(document).ready(function (){
                   nitrogen_data = [],
                   date = [],
                   name = area.name.toString() + "-" + item.name.toString();
-              alert(name);
               if (data_objects.data[area.id][item.id] !== null){
                 let data = data_objects.data[area.id][item.id];
                 $.each(data, function (index, item) {
