@@ -333,15 +333,30 @@ $(document).ready(function () {
     var email = $('#id_email').val(),
         filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/,
         value = $('form#myform-forgetpass :input')[0],
-        recovery_code = $('#id_resetcode').val();
-    if (email === '' && recovery_code === '') {
-      $('.error1').fadeOut('fast', function() {
-        $(this).css('top', '214px');
-      });
-      $('.error1').fadeIn('fast', function(){
-        $('#id_email').focus();
-        $('#id_resetcode').focus();
-      });
+        recovery_code = $('#id_resetcode').val(),
+        newpass = $('#id_newpassword').val(),
+        retypepass = $('#id_retypepass').val();
+    if (email === '' && recovery_code === '' && (newpass === '' || retypepass === '')) {
+      if (email === '' && recovery_code === '' && newpass === '') {
+        $('.error1').fadeOut('fast', function() {
+          $(this).css('top', '214px');
+        });
+        $('.error1').fadeIn('fast', function(){
+          $('#id_email').focus();
+          $('#id_resetcode').focus();
+          $('#id_newpassword').focus();
+        });
+      }
+      else if (email === '' && recovery_code === '' && retypepass === '') {
+        $('.error1').fadeOut('fast', function() {
+          $(this).css('top', '268px');
+        });
+        $('.error1').fadeIn('fast', function(){
+          $('#id_email').focus();
+          $('#id_resetcode').focus();
+          $('#id_retypepass').focus();
+        });
+      }
       return;
     }
     if (email !== '' && !filter.test(email)) {
@@ -389,7 +404,14 @@ $(document).ready(function () {
         traditional: true,
         complete: function (xmlHttp, textStatus) {
           if (xmlHttp.responseText === 'successful') {
-            window.open(window.location.href.split('#')[0], '_self');
+            window.location.href = '#signin';
+            window.location.href = '#signup';
+            $('#id_newpassword').removeAttr('type');
+            $('#id_newpassword').attr('type', 'password');
+            $('#id_retypepass').removeAttr('type');
+            $('#id_retypepass').attr('type', 'password');
+            $('#id_resetcode').attr('type', 'hidden');
+            $('#id_resetcode').val('');
           }
           else if (xmlHttp.responseText === 'failed') {
             $('.invalid-error2').text('* Invalid reset code. Try again !');
@@ -420,12 +442,65 @@ $(document).ready(function () {
         }
       });
     }
+    else if (newpass !== '' && retypepass !== '') {
+      if (newpass !== retypepass) {
+        $('.invalid-error2').text('* Retyped password does not match !');
+        $('.invalid-error2').css('display', 'block');
+        return;
+      }
+      $.ajax({
+        url: '/authen/manual/reset/pass/',
+        data: {
+          'csrfmiddlewaretoken': $(value).val(),
+          'newpassword': newpass
+        },
+        type: 'post',
+        traditional: true,
+        complete: function (xmlHttp, textStatus) {
+          if (xmlHttp.responseText === 'successful') {
+            window.open(window.location.href.split('#')[0], '_self');
+          }
+          else if (xmlHttp.responseText === 'expired') {
+            var count = 3,
+              countdown = setInterval(function () {
+                $('.invalid-error2').text('* Session is expire. Redirect ' + count.toString() + ' !');
+                $('.invalid-error2').css('display', 'block');
+                if (count == 0) {
+                  clearInterval(countdown);
+                  window.location.href = '#signin';
+                  window.location.href = '#signup';
+                  $('#id_email').removeAttr('type');
+                  $('#id_resetcode').attr('type', 'hidden');
+                  $('#id_newpassword').attr('type', 'hidden');
+                  $('#id_retypepass').attr('type', 'hidden');
+                  $('#id_email').val('');
+                  $('#id_resetcode').val('');
+                  $('#id_newpassword').val('');
+                  $('#id_retypepass').val('');
+                  $('.invalid-error2').css('display', 'none');
+                }
+                count--;
+            }, 1000);
+          }
+          else if (xmlHttp.responseText === 'failed') {
+            $('.invalid-error2').text('** Internal server error, contact admin to fix it !');
+            $('.invalid-error2').css('display', 'block');
+          }
+        }
+      });
+    }
   });
 
   $('#return_login').on('click', function () {
     setTimeout(function () {
       $('#id_email').removeAttr('type');
+      $('#id_email').val('');
       $('#id_resetcode').attr('type', 'hidden');
+      $('#id_resetcode').val('');
+      $('#id_newpassword').attr('type', 'hidden');
+      $('#id_newpassword').val('');
+      $('#id_retypepass').attr('type', 'hidden');
+      $('#id_retypepass').val('');
       $('.error').fadeOut('fast');
       $('.error1').fadeOut('fast');
       $('.invalid-error2').css('display', 'none');

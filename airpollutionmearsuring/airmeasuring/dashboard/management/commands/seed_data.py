@@ -36,12 +36,16 @@ class Command(BaseCommand):
         while start_datetime <= end_date:
             co_a = uniform(2.5, 5)
             co_b = uniform(2.5, 5)
+            co_c = uniform(2.5, 5)
             rawdata1 = RawData(co=co_a, measuring_date=start_datetime,
-                               node=node2, node_identification=node2.node_identification)
+                               node=node1, node_identification=node1.node_identification)
             rawdata2 = RawData(co=co_b, measuring_date=start_datetime,
+                               node=node2, node_identification=node2.node_identification)
+            rawdata3 = RawData(co=co_c, measuring_date=start_datetime,
                                node=node3, node_identification=node3.node_identification)
             rawdata1.save()
             rawdata2.save()
+            rawdata3.save()
             start_datetime += timedelta(hours=1)
 
         start_datetime = datetime.strptime('2017 11 01', '%Y %m %d')

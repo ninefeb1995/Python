@@ -106,11 +106,15 @@ $(document).ready(function () {
   $('#datatable tbody').on('click', '.bg-purple', function(e){
     e.preventDefault();
     var data = table.row($(this).parents('tr')).data();
+    if (`${data.longitude}` !== '' && `${data.latitude}` !== '') {
+      $('[name="node_location"]').val('(' + `${data.latitude}` + ';' + `${data.longitude}` + ')');
+      $('.btn-connect').hide();
+    }
     $('[name="node_name"]').val(`${data.name}`);
     $('[name="node_identification"]').val(`${data.node_identification}`);
     $('[name="node_area"]').val(`${data.area}`);
     $('[name="node_gateway_id"]').val("");
-    if(`${data.role}` === 'node_gateway'){
+    if (`${data.role}` === 'node_gateway') {
       $('input[value="node_gateway"]').attr('checked', true);
       $('input[value="node_gateway"]').parents().addClass('checked');
       $('input[value="node_cell"]').removeAttr('checked');
