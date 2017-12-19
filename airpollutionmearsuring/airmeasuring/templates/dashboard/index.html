@@ -1,5 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+{% block title %}
+  Dashboard | {{ block.super }}
+{% endblock %}
 {% block extra_style %}
   <link href="{% static 'project/dashboard/css/dashboard.css' %}" rel="stylesheet"/>
 {% endblock %}

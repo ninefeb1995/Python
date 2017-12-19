@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-
+{% block title %}
+  Introduction | {{ block.super }}
+{% endblock %}
 {% block content %}
   <div class="right_col" role="main">
     <div class="col-md-12 col-sm-12 col-xs-12">
@@ -22,7 +24,7 @@
               </li>
               <li><a href="#oursystem" data-toggle="tab">Our System</a>
               </li>
-              <li><a href="#messages" data-toggle="tab">Messages</a>
+              <li><a href="#contribute" data-toggle="tab">Contribution</a>
               </li>
               <li><a href="#aboutus" data-toggle="tab">About us</a>
               </li>
@@ -60,7 +62,56 @@
               </div>
               <div class="tab-pane" id="oursystem">
                 <p class="lead">What we do</p>
-                <p>Interpreting the AQI</p>
+                <p>Our system monitors air quality in urban areas in Vietnam</p>
+                <p>How to evaluate the air quality in an area</p>
+                <p>We use AQI. An air quality index (AQI) is a number used by government agencies to communicate to the public how polluted the air currently is or how polluted it is forecast to become. As the AQI increases, an increasingly large percentage of the population is likely to experience increasingly severe adverse health effects. Different countries have their own air quality indices, corresponding to different national air quality standards</p>
+                <p>The index is based on the concentrations of 6 pollutants. The index is calculated from the concentrations of the following pollutants: Ozone, Nitrogen Dioxide, Sulphur Dioxide, Cacbon Monoxide, Pb, and PM2.5(particles with an aerodynamic diameter less than 2.5 μm) or PM10(particles with an aerodynamic diameter less than 10 μm). The breakpoints between index values are defined for each pollutant separately and the overall index is defined as the maximum value of the index. Different averaging periods are used for different pollutants.</p>
+                <p>The daily AQI of 6 pollutants is calculated by taking the 24-hour concentration average from midnight to midnight (Local Standard Time) and converting to AQI. Each average pollutant measurement in 24-hours is converted into a pollutant index. A pollutant’s index is its concentration expressed as a percentage of the relevant air standard:</p>
+                <p style="text-align: center;"><img alt="no-img" src="{% static 'project/introduction/img/AQI-formula.gif' %}" width="267" height="41"></p>
+                <p>Air standard published by Ministry of Natural Resources and Environment of Vietname is shown below:</p>
+                <table class="table table-striped jambo_table bulk_action">
+                  <thead style="font-weight: bold">
+                    <tr>
+                      <td>Index</td>
+                      <td>Pollutant</td>
+                      <td>24-hour concentration average</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>CO</td>
+                      <td>5</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>NO2</td>
+                      <td>0.1</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>SO2</td>
+                      <td>0.3</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>Pb</td>
+                      <td>0.005</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>0.3</td>
+                      <td>0.06</td>
+                    </tr>
+                    <tr>
+                      <td>6</td>
+                      <td>PM10</td>
+                      <td>0.2</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <p style="text-align: center;">Table 1. National Technical Regulation on Ambient Air Quality in Vietnam</p>
+                <p>Every day, the different pollutant indexes at each monitoring station are compared. The highest pollutant index at each site is taken as the air quality index summary for that air monitoring station for that day. Then the AQI will be associated health effects and a colour representation of the categories as shown below:</p>
                 <table class="table table-striped jambo_table bulk_action">
                   <thead style="font-weight: bold">
                     <tr>
@@ -86,7 +137,7 @@
                       <td>Air quality is acceptable; however, for some pollutants there may be a moderate health concern for a very small number of people who are unusually sensitive to air pollution.</td>
                     </tr>
                     <tr>
-                      <td>3 - Unhealthy for Sensive Groups/td>
+                      <td>3 - Unhealthy for Sensive Groups</td>
                       <td style="background-color: hsl(40, 61%, 54%);"></td>
                       <td>Members of sensitive groups may experience health effects. The general public is not likely to be affected.</td>
                     </tr>
@@ -107,14 +158,17 @@
                     </tr>
                   </tbody>
                 </table>
+                <p style="text-align: center;">Table 2. Interpreting the AQI</p>
               </div>
-              <div class="tab-pane" id="messages">
-                Tab.
+              <div class="tab-pane" id="contribute">
+                <p class="lead">What we contribute to community</p>
+                <p>For government, they can monitor and handle promptly when abnormalities occur in the areas where the sensor is located. We provide two kinds of users to manage system. First, Administrator they can manage devices and users, show reports. Second, Staff they can manage devices, show reports.</p>
+                <p>For residents, they can see the data and air pollution where they are standing through mobile app.</p>
               </div>
               <div class="tab-pane" id="aboutus">
                 <p class="lead">Who we are</p>
                 <p>We are students at UIT and majoring computer networks and communications. There are two members in our group.</p>
-                <p>Our system is a product for graduation thesis</p>
+                <p>Our system is a product for graduation thesis.</p>
                 <p>Contact us:</p>
                 <ul class="list-inline">
                   <li><a href="https://fb.com/huuthinh.le.3/" target="_blank" ><i class="fa fa-facebook-square"></i></a>

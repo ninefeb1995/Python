@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
-
+{% block title %}
+  Report | {{ block.super }}
+{% endblock %}
 {% block extra_style %}
 	<link href="{% static 'project/report/css/custom.css' %}" rel="stylesheet">
 {% endblock %}

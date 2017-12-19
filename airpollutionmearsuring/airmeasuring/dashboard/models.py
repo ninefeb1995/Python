@@ -49,6 +49,7 @@ class AQI(models.Model):
     value = models.FloatField()
     of_date = models.DateField(default=timezone.now())
     node = models.ForeignKey('manage_devices.Node', on_delete=models.SET_NULL, null=True)
+    forecast = models.CharField(max_length=10, null=True)
 
 
 def job_schedule():
