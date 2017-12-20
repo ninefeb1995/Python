@@ -12,6 +12,7 @@ from django.http.response import HttpResponse
 from django.utils import timezone
 from geopy.distance import great_circle
 import logging
+from time import sleep
 
 logger = logging.getLogger(__name__)
 
@@ -57,17 +58,19 @@ class DashBoardShowOnView(LoginRequiredMixin, View):
         return JsonResponse(dict_data, safe=False)
 
 
+lastest_id = {}
+
+
 class DashBoardEventStream(LoginRequiredMixin, View):
 
-    def eventstream(self, name_of_node):
+    def eventstream(self, data):
         # node_name = name_of_node.replace('+', ' ')
         # last_connection = Node.objects.filter(node_identification=name_of_node)[0].last_connect
         # now = timezone.now()
         # last_activity = now - last_connection
         # if last_activity.total_seconds() > 60:
         #     return True
-        latest_object = RawData.objects.filter(node_identification=name_of_node).latest()
-        stream = '&value=' + str(latest_object.co) + '|' + str(latest_object.nitrogen)
+        stream = '&value=' + str(data.co) + '|' + str(data.nitrogen)
         yield stream
         # if latest_object:
         #     if name_of_node == 'co':
@@ -84,7 +87,19 @@ class DashBoardEventStream(LoginRequiredMixin, View):
     def get(self, request, name_of_node):
         # if self.eventstream(name_of_node):
         #     return
-        response = HttpResponse(self.eventstream(name_of_node), content_type='text/event-stream')
+        count = 0
+        while True:
+            count += 1
+            latest_object = RawData.objects.filter(node_identification=name_of_node).latest()
+            id_of_latest = latest_object.id
+            global lastest_id
+            if name_of_node not in lastest_id or lastest_id[name_of_node] != id_of_latest:
+                lastest_id[name_of_node] = id_of_latest
+                break
+            sleep(1)
+            if count == 1:
+                return
+        response = HttpResponse(self.eventstream(latest_object), content_type='text/event-stream')
         response['Cache-Control'] = 'no-cache'
         return response
 

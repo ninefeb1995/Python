@@ -40,14 +40,17 @@ class ThreadedServer(object):
                     print(data)
                     # response = data
                     # client.send(response)
-                    # # handle data here
-                    # co, node = str(data, "ascii").split('-')
-                    # node_id = Node.objects.get(node_identification=node)
-                    # new_data = RawData(co=co,
-                    #                    node=node_id,
-                    #                    node_identification=node_id.node_identification,
-                    #                    measuring_date=datetime.now())
-                    # new_data.save(force_insert=True)
+                    # handle data here
+                    try:
+                        node, co = str(data, "ascii").split('-')
+                        node_id = Node.objects.get(node_identification=node)
+                        new_data = RawData(co=co,
+                                           node=node_id,
+                                           node_identification=node_id.node_identification,
+                                           measuring_date=datetime.now())
+                        new_data.save(force_insert=True)
+                    except:
+                        logger.exception("Error when adding data to database !\n")
                 else:
                     client.close()
             except:

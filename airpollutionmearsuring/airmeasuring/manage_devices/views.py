@@ -28,7 +28,7 @@ class DeviceDetailView(LoginRequiredMixin, View):
             return self.put(*args, **kwargs)
         if method == "delete":
             return self.delete(*args, **kwargs)
-        return super(NodeSerialization, self).dispatch(*args, **kwargs)
+        return super(DeviceDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, pk):
         pass
@@ -44,7 +44,7 @@ class DeviceDetailView(LoginRequiredMixin, View):
             instance.gateway_id = gateway_id
         if request.POST.get('node_location'):
             instance.is_available = True
-            longitude, latitude = request.POST.get('node_location').split(';')
+            latitude, longitude = request.POST.get('node_location').split(';')
             instance.longitude = longitude
             instance.latitude = latitude
         instance.name = request.POST.get('node_name', instance.name)
@@ -76,7 +76,7 @@ class DeviceNewView(LoginRequiredMixin, View):
             data['gateway_id'] = Node.objects.get(pk=request.POST.get('node_gateway_id'))
         if request.POST.get('node_location'):
             data['is_available'] = True
-            longitude, latitude = request.POST.get('node_location').split(';')
+            latitude, longitude = request.POST.get('node_location').split(';')
             data['longitude'] = longitude
             data['latitude'] = latitude
         data['name'] = request.POST.get('node_name')

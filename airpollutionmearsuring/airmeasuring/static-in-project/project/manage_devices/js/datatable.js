@@ -107,7 +107,7 @@ $(document).ready(function () {
     e.preventDefault();
     var data = table.row($(this).parents('tr')).data();
     if (`${data.longitude}` !== '' && `${data.latitude}` !== '') {
-      $('[name="node_location"]').val('(' + `${data.latitude}` + ';' + `${data.longitude}` + ')');
+      $('[name="node_location"]').val(`${data.latitude}` + ';' + `${data.longitude}`);
       $('.btn-connect').hide();
     }
     $('[name="node_name"]').val(`${data.name}`);
