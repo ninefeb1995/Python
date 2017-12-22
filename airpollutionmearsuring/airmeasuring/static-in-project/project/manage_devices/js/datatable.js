@@ -7,7 +7,7 @@ $(document).ready(function () {
     columns: [
       { title: 'ID', data: 'node_identification'},
       { title: 'Name', data: 'name'},
-      { title: 'Area', data: 'area'},
+      { title: 'Area', data: 'area_name'},
       { title: 'Active', data: 'is_available', render: function (is_available) {
           if(is_available){
               return 'Yes';
@@ -18,13 +18,13 @@ $(document).ready(function () {
       }},
       { title: 'Action', data: 'is_available', render: function (is_available) {
           var button_list = ` <a href="" class="btn btn-sm btn-flat bg-purple"><i class="fa fa-edit"></i> Edit</a>
-                              <a href="#" class="btn btn-sm  btn-flat btn-danger"><i class="fa fa-trash"></i> Delete</a>
+                              <a href="" class="btn btn-sm  btn-flat btn-danger"><i class="fa fa-trash"></i> Delete</a>
                              `;
          if(is_available) {
-              button_list += `<a href="#" class="btn btn-sm  btn-flat btn-warning"><i class="fa fa-lock"></i> Disconnect</a>`;
+              button_list += `<a href="" class="btn btn-sm  btn-flat btn-warning btn-switch-state"><i class="fa fa-lock"></i> Disconnect</a>`;
           }
           else {
-              button_list += `<a href="#" class="btn btn-sm  btn-flat btn-warning"><i class="fa fa-lock"></i> Connect</a>`;
+              button_list += `<a href="" class="btn btn-sm  btn-flat btn-warning btn-switch-state"><i class="fa fa-lock"></i> Connect</a>`;
           }
         return button_list;
       }}
@@ -106,14 +106,14 @@ $(document).ready(function () {
   $('#datatable tbody').on('click', '.bg-purple', function(e){
     e.preventDefault();
     var data = table.row($(this).parents('tr')).data();
-    if (`${data.longitude}` !== '' && `${data.latitude}` !== '') {
+    if (`${data.longitude}` !== 'null' && `${data.latitude}` !== 'null') {
       $('[name="node_location"]').val(`${data.latitude}` + ';' + `${data.longitude}`);
       $('.btn-connect').hide();
     }
     $('[name="node_name"]').val(`${data.name}`);
     $('[name="node_identification"]').val(`${data.node_identification}`);
     $('[name="node_area"]').val(`${data.area}`);
-    $('[name="node_gateway_id"]').val("");
+    $('[name="node_gateway_id"]').val('');
     if (`${data.role}` === 'node_gateway') {
       $('input[value="node_gateway"]').attr('checked', true);
       $('input[value="node_gateway"]').parents().addClass('checked');
@@ -133,6 +133,38 @@ $(document).ready(function () {
     $('#modal-edit').modal({
       backdrop: 'static',
       show: true
+    });
+  });
+
+  $('#datatable tbody').on('click', '.btn-switch-state', function(e){
+    e.preventDefault();
+    var data = table.row($(this).parents('tr')).data(),
+        is_available = true;
+    if (data.is_available) {
+      is_available = false;
+    }
+    var csrftoken = getCookie('csrftoken');
+    $.ajax({
+      url: `/manage-devices/devices/${data.id}/`,
+      data: {
+        '_method': 'get',
+        'csrfmiddlewaretoken': csrftoken.toString(),
+        'is_available': is_available.toString()
+      },
+      type: 'post',
+      traditional: true,
+      complete: function (xmlHttp, textStatus) {
+        // if(xmlHttp.responseText === 'successful') {
+        //   $('#datatable').DataTable().ajax.reload();
+        // }
+        // else if (xmlHttp.responseText === 'failed') {
+        //
+        // }
+        // $('html').html(xmlHttp.responseText); // Omit because it makes html in body
+        document.open("text/html", "replace");
+        document.write(xmlHttp.responseText);
+        document.close();
+      }
     });
   });
 
@@ -189,5 +221,19 @@ $(document).ready(function () {
   //   }));
   // });
 
-
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      var cookies = document.cookie.split(';');
+      for (var i = 0; i < cookies.length; i++) {
+        var cookie = jQuery.trim(cookies[i]);
+        // Does this cookie string begin with the name we want?
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+        }
+      }
+    }
+    return cookieValue;
+  }
 });

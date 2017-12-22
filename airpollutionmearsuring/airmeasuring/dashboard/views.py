@@ -140,7 +140,7 @@ class DashBoardRawData(View):
 class DashBoardViewAQIOnMap(View):
 
     def get(self, request):
-        node_in_active = Node.objects.all()
+        node_in_active = Node.objects.filter(is_available=True)
         if node_in_active.count() == 0:
             return
         day = timezone.now().date() - timedelta(days=1)

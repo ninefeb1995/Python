@@ -12,7 +12,7 @@ s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.connect((TCP_IP, TCP_PORT))
 while True:
     MESSAGE = ''
-    MESSAGE += 'nodea' + '-'
+    MESSAGE += 'nodea' + '&'
     MESSAGE += str(random.uniform(2.5, 5))
     # MESSAGE += str(random.uniform(2.5, 5)) + '-'
     data = bytes(MESSAGE, "ascii")

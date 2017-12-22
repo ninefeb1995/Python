@@ -4,7 +4,6 @@ from django.views import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Node
 from dashboard.models import Area
-from api.serializers import NodeSerialization
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 
@@ -23,15 +22,28 @@ class DeviceListView(LoginRequiredMixin, View):
 class DeviceDetailView(LoginRequiredMixin, View):
 
     def dispatch(self, *args, **kwargs):
-        method = self.request.POST.get("_method", '').lower()
-        if method == "put":
+        method = self.request.POST.get('_method', '').lower()
+        if method == 'put':
             return self.put(*args, **kwargs)
-        if method == "delete":
+        if method == 'get':
+            return self.get(*args, **kwargs)
+        if method == 'delete':
             return self.delete(*args, **kwargs)
         return super(DeviceDetailView, self).dispatch(*args, **kwargs)
 
     def get(self, request, pk):
-        pass
+        is_available = request.POST.get('is_available', '')
+        try:
+            instance = Node.objects.get(pk=pk)
+            if is_available == 'true':
+                instance.is_available = True
+            else:
+                instance.is_available = False
+            instance.save()
+            messages.success(request, 'Updating {} is successful'.format(instance.name))
+        except:
+            messages.error(request, 'Updating is failed')
+        return HttpResponseRedirect(reverse('manage_devices:device_list'))
 
     def put(self, request, pk):
         instance = Node.objects.get(pk=pk)
@@ -82,6 +94,7 @@ class DeviceNewView(LoginRequiredMixin, View):
         data['name'] = request.POST.get('node_name')
         data['area'] = Area.objects.get(pk=request.POST.get('node_area'))
         data['node_identification'] = request.POST.get('node_identification')
+        data['user'] = request.user
         try:
             node = Node.objects.create(**data)
             messages.success(request, 'Creating {} is successful'.format(node.name))

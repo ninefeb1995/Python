@@ -48,16 +48,21 @@ class DataSerialization(serializers.ModelSerializer):
 
 
 class RawDataSerialization(serializers.ModelSerializer):
+
     class Meta:
         model = RawData
         fields = '__all__'
 
 
 class NodeSerialization(serializers.ModelSerializer):
+    area_name = serializers.SerializerMethodField()
 
     class Meta:
         model = Node
         fields = '__all__'
+
+    def get_area_name(self, obj):
+        return obj.area.name
 
 
 class AQISerialization(serializers.ModelSerializer):

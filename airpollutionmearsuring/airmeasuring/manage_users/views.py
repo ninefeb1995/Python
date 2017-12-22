@@ -1,19 +1,32 @@
 from django.shortcuts import render, reverse
 from django.http import HttpResponseRedirect
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views import View
 from api.serializers import UserSerialization
 from django.contrib.auth.models import User
 from django.contrib import messages
+from django.core.exceptions import PermissionDenied
 
 
-class UserListView(LoginRequiredMixin, View):
+class UserListView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def get_login_url(self):
+        raise PermissionDenied
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def get(self, request):
         return render(request, template_name='manage_users/index.html')
 
 
-class UserDetailView(LoginRequiredMixin, View):
+class UserDetailView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def get_login_url(self):
+        raise PermissionDenied
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def dispatch(self, *args, **kwargs):
         method = self.request.POST.get("_method", '').lower()
@@ -51,7 +64,13 @@ class UserDetailView(LoginRequiredMixin, View):
         return HttpResponseRedirect(reverse('manage_users:user_list'))
 
 
-class UserNewView(LoginRequiredMixin, View):
+class UserNewView(LoginRequiredMixin, UserPassesTestMixin, View):
+
+    def get_login_url(self):
+        raise PermissionDenied
+
+    def test_func(self):
+        return self.request.user.is_superuser
 
     def post(self, request):
         check_type_of_user = request.POST.get('iCheck')
@@ -62,6 +81,7 @@ class UserNewView(LoginRequiredMixin, View):
         else:
             copy_post['is_superuser'] = 'false'
             copy_post['is_staff'] = 'true'
+        copy_post['is_active'] = 'true'
         serialized = UserSerialization(data=copy_post)
         if serialized.is_valid():
             serialized.save()

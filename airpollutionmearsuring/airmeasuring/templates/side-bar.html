@@ -31,9 +31,11 @@
         <li>
           <a href="{% url 'dashboard:dashboard_index' %}"><i class="fa fa-dashboard"></i> Dashboard</a>
         </li>
+        {% if request.user.is_superuser %}
 				<li>
           <a href="{% url 'manage_users:user_list' %}"><i class="fa fa-user"></i> Manage Users</a>
         </li>
+        {% endif %}
 				<li>
           <a href="{% url 'manage_devices:device_list' %}"><i class="fa fa-plug"></i> Manage Devices</a>
         </li>

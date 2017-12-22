@@ -16,28 +16,35 @@ class UserModelViewSet(viewsets.ModelViewSet):
 class AreaModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AreaSerialization
     queryset = Area.objects.all()
-    permission_classes = (permissions.IsAdminPermission,)
+    permission_classes = ()
 
 
 class DataModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.DataSerialization
     queryset = Data.objects.all()
-    permission_classes = (permissions.IsAdminPermission,)
+    permission_classes = ()
 
 
 class RawDataModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.RawDataSerialization
     queryset = RawData.objects.all()
-    permission_classes = (permissions.IsAdminPermission,)
+    permission_classes = ()
 
 
 class NodeModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.NodeSerialization
     queryset = Node.objects.all()
-    permission_classes = (permissions.IsAdminPermission,)
+    permission_classes = ()
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.is_superuser:
+            return self.queryset
+        else:
+            return self.queryset.filter(user=user)
 
 
 class AQIModelViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AQISerialization
     queryset = AQI.objects.all()
-    permission_classes = (permissions.IsAdminPermission,)
+    permission_classes = ()

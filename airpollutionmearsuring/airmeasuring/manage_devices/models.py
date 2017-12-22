@@ -12,8 +12,7 @@ class Node(models.Model):
     longitude = models.CharField(max_length=255, null=True)
     latitude = models.CharField(max_length=255, null=True)
     last_connect = models.DateTimeField(default=timezone.now())
+    user = models.ForeignKey('auth.User', models.SET_NULL, null=True)
 
     def __str__(self):
         return self.name
-
-

@@ -42,7 +42,7 @@ class ThreadedServer(object):
                     # client.send(response)
                     # handle data here
                     try:
-                        node, co = str(data, "ascii").split('-')
+                        node, co = str(data, "ascii").split('&')
                         node_id = Node.objects.get(node_identification=node)
                         new_data = RawData(co=co,
                                            node=node_id,
