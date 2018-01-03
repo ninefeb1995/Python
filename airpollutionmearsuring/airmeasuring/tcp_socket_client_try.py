@@ -2,7 +2,7 @@ import time
 import socket
 import random
 
-TCP_IP = '171.227.31.131'
+TCP_IP = '115.76.150.68'
 TCP_PORT = 1995
 BUFFER_SIZE = 1024
 
@@ -19,6 +19,6 @@ while True:
     s.send(data)
     # data = s.recv(BUFFER_SIZE)
     # print("Received data: ", data)
-    time.sleep(5)
+    time.sleep(10)
 
 

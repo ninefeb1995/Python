@@ -25,7 +25,7 @@ class ThreadedServer(object):
         self.sock.settimeout(180)
         while True:
             client, address = self.sock.accept()
-            client.settimeout(10)
+            client.settimeout(100)
             threading.Thread(target=self.listen_to_client, args=(client, address)).start()
 
     def listen_to_client(self, client, address):
@@ -64,5 +64,5 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # ThreadedServer('localhost', 1995).listen()
-        ThreadedServer('192.168.1.112', 8001).listen()
+        ThreadedServer('0.0.0.0', 8001).listen()
 

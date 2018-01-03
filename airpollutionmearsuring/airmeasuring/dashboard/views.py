@@ -176,10 +176,11 @@ class DashBoardViewApp(View):
             return JsonResponse(data_to_send, safe=False)
         location_app = (longitude, latitude)
         nodes = Node.objects.filter(is_available=True)
-        min_in_distance = 0.0
-        min_in_node = None
+        # min_in_distance = 0.0
+        # min_in_node = None
         total_aqi_value = 0.0
         count_aqi_value = 0
+        dict_distance_node = {}
         if nodes.count() == 0:
             data_to_send['status'] = 'failed'
             data_to_send['message'] = 'There is no data in this area !'
@@ -189,24 +190,40 @@ class DashBoardViewApp(View):
             distance_in_meter = great_circle(location_node, location_app).meters
             if distance_in_meter > 1600:
                 continue
-            if index == 0 or distance_in_meter < min_in_distance:
-                min_in_distance = distance_in_meter
-                min_in_node = node
+            dict_distance_node[distance_in_meter] = node
+            # if index == 0 or distance_in_meter < min_in_distance:
+            #     min_in_distance = distance_in_meter
+            #     min_in_node = node
             try:
                 total_aqi_value += AQI.objects.filter(node=node).latest(field_name='of_date').value
                 count_aqi_value += 1
             except AQI.DoesNotExist:
                 logger.error('\n\n\nError when getting AQI from node at DashBoardViewApp')
-        if min_in_distance == 0.0:
+        if len(dict_distance_node) == 0:
             data_to_send['status'] = 'failed'
             data_to_send['message'] = 'There is no data in this area !'
             return JsonResponse(data_to_send, safe=False)
-        try:
-            data_from_node = Data.objects.filter(node=min_in_node).latest(field_name='measuring_date')
-        except Data.DoesNotExist:
+        ordered_dict = sorted(dict_distance_node.items(), key=lambda x: x[0])
+        for item in ordered_dict:
+            try:
+                data_from_node = Data.objects.filter(node=item[1]).latest(field_name='measuring_date')
+                break
+            except Data.DoesNotExist:
+                continue
+        if not data_from_node:
             data_to_send['status'] = 'failed'
             data_to_send['message'] = 'There is no data in this area !'
             return JsonResponse(data_to_send, safe=False)
+        # if min_in_distance == 0.0:
+        #     data_to_send['status'] = 'failed'
+        #     data_to_send['message'] = 'There is no data in this area !'
+        #     return JsonResponse(data_to_send, safe=False)
+        # try:
+        #     data_from_node = Data.objects.filter(node=min_in_node).latest(field_name='measuring_date')
+        # except Data.DoesNotExist:
+        #     data_to_send['status'] = 'failed'
+        #     data_to_send['message'] = 'There is no data in this area !'
+        #     return JsonResponse(data_to_send, safe=False)
         aqi_to_send = total_aqi_value / count_aqi_value
         if aqi_to_send <= 50.0:
             color = 1
@@ -225,7 +242,7 @@ class DashBoardViewApp(View):
             'CO': data_from_node.co,
             'AQI': aqi_to_send,
             'color': color,
-            'trend': ''
+            'trend': 0
         }
         logger.info('\n\n\nApp with ip:%s getting data', get_client_ip(request))
         return JsonResponse(data_to_send, safe=False)
