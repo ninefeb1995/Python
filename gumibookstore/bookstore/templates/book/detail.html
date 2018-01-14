@@ -1,0 +1,137 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block header %}
+	<link rel="stylesheet" href="{% static "css/lightbox.css" %}" type="text/css" media="screen" />
+	<script src="{% static "js/prototype.js" %}" type="text/javascript"></script>
+	<script src="{% static "js/scriptaculous.js?load=effects" %}" type="text/javascript"></script>
+	<script src="{% static "js/lightbox.js" %}" type="text/javascript"></script>
+    <script src="{% static "js/java.js" %}" type="text/javascript" ></script>
+    <script src="{% static "js/jquery-3.1.1.min.js" %}" type="text/javascript" ></script>
+{% endblock %}
+{% block placeholder %}
+    <div class="left_content">
+        <div class="crumb_nav">
+            <a href="{% url 'home' %}">Home</a> &gt;&gt; {{ book.title }}
+        </div>
+        <div class="title"><span class="title_icon"><img src={% static "img/bullet1.gif" %} alt="" title="" /></span>{{ book.title }}</div>
+
+        <div class="feat_prod_box_details">
+            <div class="prod_img">
+                <a href="{{ book.image.url }}"><img src="{{ book.image.url }} " alt="cover_image" class="book_cover" title="" border="0"  /></a>
+                <br />
+                <br />
+                <a href="{{ book.image.url }}" rel="lightbox"><img src=" {% static "img/zoom.gif" %} " alt="" title="" border="0" /></a>
+            </div>
+
+            <div class="prod_det_box">
+                <div class="box_top"></div>
+                <div class="box_center">
+                    <div class="prod_title">Details</div>
+                    <p class="details">{{ book.description }}</p>
+                    {% if not request.user.is_superuser %}
+                        <button id="add_my_cart" class="popup" onclick="add_to_cart()">Add cart
+                            <span class="popuptext" id="myPopup">Check your cart</span>
+                        </button>
+                    {% endif %}
+
+                    <div class="clear"></div>
+                </div>
+                <div class="box_bottom"></div>
+            </div>
+
+            <div class="clear"></div>
+        </div>
+
+        <div id="demo" class="demolayout">
+
+            <ul id="demo-nav" class="demolayout">
+                <li><a class="active" href="#tab1">More details</a></li>
+                <li><a class="" href="#tab2">Related books</a></li>
+            </ul>
+
+            <div class="tabs-container">
+
+                <div class="tab" id="tab1">
+                    <p class="more_details">Read more at:</p>
+                    <ul class="list">
+                        <li><a href="{{ book.format }}">{{ book.format }}</a></li>
+                    </ul>
+                </div>
+
+                <div class="tab" id="tab2">
+                {% if list_book_of_cate %}
+                    {% for book in list_book_of_cate %}
+                        <div class="new_prod_box">
+                            <a href="{% url "detail" book.id %}">{{ book.title }}</a>
+                            <div class="new_prod_bg">
+                                <a href="{% url "detail" book.id %}"><img src="{{ book.image.url }}" alt="" title="" class="thumb" border="0" /></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="feat_prod_box">
+                        <div class="prod_det_box">
+                            <p>There's nothing...</p>
+                        </div>
+                        <div class="clear">
+                        </div>
+                    </div>
+                {% endif %}
+                    <div class="clear"></div>
+                </div>
+
+            </div>
+        </div>
+        <div class="clear"></div>
+        <script type="text/javascript">
+
+            var tabber1 = new Yetii({
+                id: 'demo'
+            });
+        </script>
+        <script type="text/javascript">
+
+            // When the user clicks on button 'add my cart'
+            function add_to_cart(){
+                $.ajax({
+                    type: "get",
+                    url: "{% url 'add-to-cart' %}",
+                    data: {
+                            book_id: {{ book.id }}
+                    },
+                    dataType: 'jsons',
+                    complete: function(xmlHttp) {
+                        var data=xmlHttp.responseText;
+                        var popup = document.getElementById("myPopup");
+                        if (data === "added")
+                        {
+                            popup.textContent="Added, check your cart";
+                        }
+                        else
+                        {
+                            var jsonResponse = JSON.parse(data);
+                            var string = jsonResponse["data"];
+
+                            if(string === "unauthenticated")
+                            {
+                                popup.textContent="You must log in";
+                            }
+
+                            else
+                            {
+                                popup.textContent="This book has already been exist";
+                            }
+                        }
+                        popup.classList.toggle("show");
+                        setTimeout(function () {
+                            popup.classList.remove("show");
+                        }, 1000);
+
+                    }
+                });
+            }
+        </script>
+    </div><!--end of left content-->
+
+{% endblock %}
+

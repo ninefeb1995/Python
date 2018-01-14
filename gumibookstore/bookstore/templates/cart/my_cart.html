@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% load custom_filter %}
+{% block header %}
+    <script src="{% static "js/jquery-3.1.1.min.js" %}" type="text/javascript" ></script>
+{% endblock %}
+{% block placeholder %}
+    <div class="left_content">
+        <div class="title"><span class="title_icon"><img src="{% static "images/bullet1.gif" %}" alt="" title="" /></span>My cart</div>
+
+        <div class="feat_prod_box_details">
+            <table class="cart_table">
+                <tr class="cart_title">
+                    <td>Book cover</td>
+                    <td>Book name</td>
+                    <td>Remove</td>
+                    <td>Check out</td>
+                </tr>
+                {% if books_in_cache %}
+                     {% for book in  books_in_cache %}
+                         <tr>
+                            <td id="detail"><a href="{% url 'detail' book.id %}"><img src="{{ book.image.url }}" alt="" title="" border="0" class="cart_thumb" /></a></td>
+                            <td>{{ book.title }}</td>
+                            <td><button id="add_my_cart" class="popup" onclick="removefromCart({{ book.id }})">Delete</button></td>
+                            <td><input type="checkbox" class="check_out_input" value="{{ book.id }}"/></td>
+                         </tr>
+                    {% endfor %}
+                {% endif %}
+            </table>
+            <td><input type="button" class="checkout" value="Borrow &gt;" onclick="borrow()"/></td>
+        </div>
+
+        <div class="title"><span class="title_icon"><img src="{% static "images/bullet1.gif" %}" alt="" title="" /></span>Request</div>
+        <div class="feat_prod_box_details">
+
+            <table class="cart_table">
+                <tr class="cart_title">
+                    <td>Book cover</td>
+                    <td>Book name</td>
+                    <td>Status</td>
+                    <td>Download</td>
+                </tr>
+                {% if carts %}
+                     {% for cart in  carts %}
+                         {% if cart.id in status %}
+                             {% for book in cart.items.all %}
+                                 <tr>
+                                    <td id="detail"><a href="{% url 'detail' book.id %}"><img src="{{ book.image.url }}" alt="" title="" border="0" class="cart_thumb" /></a></td>
+                                    <td>{{ book.title }}</td>
+                                    <td>{{ status|get_status_name:cart.id }}</td>
+                                     {% if status|get_status_name:cart.id == 'APPROVED' %}
+{#                                         <td><a href="{{ book.archive_link.url }}"> Download</a></td>#}
+                                     {% endif %}
+                                    <td><input type="button" value="Download" onclick="download('{{ book.archive_link.url }}')" {% if status|get_status_name:cart.id == 'APPROVED' %} class="add_my_cart" {% else %} class="add_my_cart_disabled" disabled {% endif %}  /></td>
+
+                                 </tr>
+                             {% endfor %}
+                         {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </table>
+        </div>
+
+        <div class="clear"></div>
+        <script type="text/javascript">
+            function removefromCart(book_id) {
+                var book = book_id;
+                $.ajax({
+                            type: 'get',
+                            url: {% url 'remove-from-cart' %},
+                            data: { book_id: book },
+                            complete: function (xmlHttp) {
+                                var data=xmlHttp.responseText;
+                                $('.center_content').html($(data).find('.center_content'));
+                            }
+                });
+            }
+
+            function borrow() {
+                var data = [];
+                var j = 0;
+                var check_checked = document.getElementsByClassName('check_out_input');
+                for (var i = 0; i < check_checked.length; i++)
+                {
+                    if(check_checked[i].checked)
+                    {
+                        data[j] = check_checked[i].value;
+                        j++;
+                    }
+                }
+                $.ajax({
+                            type:'get',
+                            url: {% url 'borrow' %},
+                            data: { books_check_out: data },
+                            traditional: true,
+                            complete: function (xmlHttp) {
+                                var data_response = xmlHttp.responseText;
+                                $('.center_content').html($(data_response).find('.center_content'));
+                            }
+                });
+            }
+
+            function download(_url) {
+                window.location.href = _url
+            }
+        </script>
+    </div><!--end of left content-->
+{% endblock %}
+
+
+

@@ -1,0 +1,25 @@
+{% extends 'modal-base.html' %}
+
+
+{% block modal_id %}modal-new{% endblock %}
+
+{% block modal_title %}
+  Adding new user
+{% endblock %}
+
+{% block modal_body %}
+  <div class="x_panel">
+    <div class="x_content">
+      <br />
+      <form class="form-horizontal form-label-left" id="form-new-device" method="post" action="{% url 'manage_devices:device_new' %}">
+        {% csrf_token %}
+        {% include 'manage_devices/form.html' %}
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block modal_footer %}
+  <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+  <button type="submit" class="btn btn-primary" id="btn-new-save">Save</button>
+{% endblock %}
