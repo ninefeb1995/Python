@@ -1,0 +1,67 @@
+<div class="form-group">
+  <label class="control-label col-md-3 col-sm-3 col-xs-12">Name<span class="required">*</span></label>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+    <input type="text" class="form-control" name="node_name" placeholder="Node name">
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="control-label col-md-3 col-sm-3 col-xs-12">ID<span class="required">*</span></label>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+    <input type="text" class="form-control" name="node_identification" placeholder="Node ID">
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="control-label col-md-3 col-sm-3 col-xs-12">Area<span class="required">*</span></label>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+		<select id="node_area" name="node_area">
+			<option value="">Choose from...</option>
+      {% if areas %}
+        {% for area in areas %}
+            <option value="{{ area.id }}">{{ area.name }}</option>
+        {% endfor %}
+      {% endif %}
+		</select>
+  </div>
+</div>
+
+<div class="form-group">
+  <label class="control-label col-md-3 col-sm-3 col-xs-12">Role<span class="required">*</span></label>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+    <div class="radio">
+      <label><input type="radio" class="flat" name="iCheck" value="node_gateway">Gateway</label>
+    </div>
+    <div class="radio">
+      <label><input type="radio" class="flat" name="iCheck" value="node_cell">Cell</label>
+    </div>
+  </div>
+</div>
+
+<div class="form-group gateway_id" hidden>
+  <label class="control-label col-md-3 col-sm-3 col-xs-12">Gateway ID<span class="required">*</span></label>
+  <div class="col-md-9 col-sm-9 col-xs-12">
+		<select id="node_gateway_id" name="node_gateway_id">
+			<option value="">Choose from...</option>
+      {% if gateways %}
+        {% for gateway in gateways %}
+            <option value="{{ gateway.id }}">{{ gateway.name }}</option>
+        {% endfor %}
+      {% endif %}
+		</select>
+  </div>
+</div>
+
+<div class="form-group">
+	<label class="control-label col-md-3 col-sm-3 col-xs-12">Location</label>
+	<div class="col-md-9 col-sm-9 col-xs-12">
+		<input class="form-control" readonly="readonly" name="node_location" placeholder="(Latitude; Longitude)" type="text">
+	</div>
+</div>
+
+<div class=form-group">
+  <div class="col-md-3 col-md-offset-3">
+    <button type="button" class="btn btn-dark btn-xs btn-connect">Connect</button>
+    <div class="loader"></div>
+  </div>
+</div>
