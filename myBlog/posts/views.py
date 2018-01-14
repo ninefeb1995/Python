@@ -82,9 +82,10 @@ def post_delete(request, pk=None):
 
 
 def upload(f):
-    file = open(f.name, 'wb+')
-    for chunk in f.chunks():
-        file.write(chunk)
+    #file = open(f.name, 'wb+')
+	with open(f.name, 'wb+') as file:
+		for chunk in f.chunks():
+			file.write(chunk)
 
 def upload_image(request):
     image = request.FILES
