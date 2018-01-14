@@ -1,0 +1,68 @@
+.my_float{
+    display: none;
+    position:fixed;
+    width:60px;
+    height:60px;
+    top:50px;
+    right:150px;
+    background-color:#0C9;
+    color:#FFF;
+    border-radius:50px;
+    text-align:center;
+    box-shadow: 2px 2px 3px #999;
+
+}
+
+/* Color change m */
+.my_float:hover{
+     animation:myfirst 2s;
+    -moz-animation:myfirst 2s infinite;
+}
+
+.btn-report-download{
+    margin-top:22px;
+}
+
+
+@-moz-keyframes myfirst /* Firefox */
+{
+    0%  {background:#11fbf7;}
+    50%  {background:#a3fffd;}
+    75%   {background:#c1fffe;}
+    100%   {background:#eff;}
+}
+
+/* Ripple magic */
+.my_float:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  background: rgba(255, 255, 255, .5);
+  opacity: 0;
+  border-radius: 100%;
+  transform: scale(1, 1) translate(-50%);
+  transform-origin: 50% 50%;
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0, 0);
+    opacity: 1;
+  }
+  20% {
+    transform: scale(25, 25);
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(40, 40);
+  }
+}
+
+.my_float::after {
+  animation: ripple 1s ease-out;
+  -moz-animation:ripple 1s infinite;
+}

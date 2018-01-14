@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block extra_style %}
+  <!-- Animate.css -->
+  <link href="{% static 'project/gentelella/vendors/animate.css/animate.min.css' %}" rel="stylesheet">
+  <link href="{% static 'project/custom_auth/css/supersized.css' %}" rel="stylesheet">
+  <link href="{% static 'project/custom_auth/css/custom_auth.css' %}" rel="stylesheet">
+{#  <link rel='stylesheet' href='http://fonts.googleapis.com/css?family=PT+Sans:400,700'>#}
+{% endblock extra_style %}
+
+{% block title %}
+  Authentication | {{ block.super }}
+{% endblock %}
+
+{% block body_class %}login{% endblock body_class %}
+
+{% block body %}
+  <div>
+    <a class="hiddenanchor" id="signup"></a>
+    <a class="hiddenanchor" id="signin"></a>
+
+    <div class="login_wrapper">
+      <div class="animate form login_form">
+        <section class="login_content">
+          <form method="post" id="myform">
+            {% csrf_token %}
+            <h1>Air Pollution Mearsurement System</h1>
+            <div class="thumbnail"><img src="{% static 'project/custom_auth/img/hat.svg' %}"/></div>
+            <div style="width: 75%; margin: 0 75px">
+              {{ form.username | add_class:'form-control' | attr:'placeholder:Username' }}
+              {{ form.password | add_class:'form-control' | attr:'placeholder:Password' }}
+              <div class="invalid-error"></div>
+              <a class="btn btn-default submit" id="login-btn" href="javascript:">Log in</a>
+              <div class="error"><span>+</span></div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">Lost your password?
+                  <a href="#signup" class="reset_pass"> Reset </a>
+                </p>
+
+                <div class="clearfix"></div>
+                <br />
+              </div>
+
+            </div>
+          </form>
+        </section>
+      </div>
+      <div id="register" class="animate form registration_form">
+        <section class="login_content">
+          <form method="post" id="myform-forgetpass">
+            {% csrf_token %}
+            <h1>Reset password</h1>
+            <div class="thumbnail"><img src="{% static 'project/custom_auth/img/hat.svg' %}"/></div>
+            <div style="width: 75%; margin: 0 75px">
+              <input id="id_email" name="email" placeholder="Email" class="form-control"/>
+              <input id="id_resetcode" name="resetcode" placeholder="Recover Code" class="form-control" type="hidden"/>
+              <input id="id_newpassword" name="newpass" placeholder="New Password" class="form-control" type="hidden"/>
+              <input id="id_retypepass" name="retypepass" placeholder="Retype New Password" class="form-control" type="hidden"/>
+              <div class="invalid-error2"></div>
+              <a class="btn btn-default submit" id="forgetpass-btn" href="javascript:">Submit</a>
+              <div class="error1"><span>+</span></div>
+
+              <div class="clearfix"></div>
+
+              <div class="separator">
+                <p class="change_link">Return to
+                  <a href="#signin" id="return_login" class="reset_pass"> Log in </a>
+                </p>
+
+                <div class="clearfix"></div>
+                <br />
+              </div>
+            </div>
+          </form>
+        </section>
+      </div>
+    </div>
+  </div>
+{% endblock body %}
+
+{% block extra_script %}
+  <script src="{% static 'project/custom_auth/js/supersized.3.2.7.min.js' %}"></script>
+  <script src="{% static 'project/custom_auth/js/supersized-init.js' %}"></script>
+  <script src="{% static 'project/custom_auth/js/custom_auth.js' %}"></script>
+{% endblock %}
