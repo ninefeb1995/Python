@@ -239,8 +239,8 @@ class DashBoardViewApp(View):
             color = 6
         data_to_send['status'] = 'success'
         data_to_send['data'] = {
-            'CO': data_from_node.co,
-            'AQI': aqi_to_send,
+            'CO': "%.2f" % round(data_from_node.co, 2),
+            'AQI': "%.2f" % round(aqi_to_send, 2),
             'color': color,
             'trend': 0
         }

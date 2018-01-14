@@ -22,10 +22,10 @@ class ThreadedServer(object):
         print("Server is listening on (%s, %s) !" % (self.host, self.port))
         logger.info("Server is listening on (%s, %s) !" % (self.host, self.port))
         self.sock.listen(10)
-        self.sock.settimeout(180)
+        self.sock.settimeout(3600)
         while True:
             client, address = self.sock.accept()
-            client.settimeout(100)
+            client.settimeout(3600)
             threading.Thread(target=self.listen_to_client, args=(client, address)).start()
 
     def listen_to_client(self, client, address):
@@ -41,16 +41,33 @@ class ThreadedServer(object):
                     # response = data
                     # client.send(response)
                     # handle data here
-                    try:
-                        node, co = str(data, "ascii").split('&')
-                        node_id = Node.objects.get(node_identification=node)
-                        new_data = RawData(co=co,
-                                           node=node_id,
-                                           node_identification=node_id.node_identification,
-                                           measuring_date=datetime.now())
-                        new_data.save(force_insert=True)
-                    except:
-                        logger.exception("Error when adding data to database !\n")
+                    processing_data = str(data, "ascii")
+                    if '\r\n' in processing_data:
+                        try:
+                            splited_data = processing_data.split('\r\n')
+                            for each_data in splited_data:
+                                node, co = each_data.split('&')
+                                node_id = Node.objects.get(node_identification=node)
+                                new_data = RawData(co=co,
+                                                   node=node_id,
+                                                   node_identification=node_id.node_identification,
+                                                   measuring_date=datetime.now())
+                                new_data.save(force_insert=True)
+                        except:
+                            logger.exception("Error when adding data to database !\n")
+                    else:
+                        try:
+                            node, co = processing_data.split('&')
+                            node_id = Node.objects.get(node_identification=node)
+                            new_data = RawData(co=co,
+                                               node=node_id,
+                                               node_identification=node_id.node_identification,
+                                               measuring_date=datetime.now())
+                            new_data.save(force_insert=True)
+                        except:
+                            logger.exception("Error when adding data to database !\n")
+
+
                 else:
                     client.close()
             except:
