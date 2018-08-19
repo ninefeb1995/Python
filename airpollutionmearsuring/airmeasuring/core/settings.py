@@ -229,7 +229,7 @@ for app in MY_APPS:
 LOGGING['loggers'].update(MY_LOGGERS)
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'ninefeb1995.dp3@gmail.com'
-EMAIL_HOST_PASSWORD = '01669315242t!!!'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 EMAIL_PORT = '587'
 EMAIL_USE_TLS = True
